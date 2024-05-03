@@ -4,4 +4,4 @@ ZenDesk App that allows you to directly view support ticket attachments in the b
 
 # Resources used:
 
-[A pure typescript scaffold for developing apps in Zendesk with React.](https://github.com/Joshlha/zd-ts-react)
+[A pure typescript scaffold for developing apps in Zendesk with React by Joshlha](https://github.com/Joshlha/zd-ts-react)
