@@ -13,12 +13,14 @@ import {
 } from "@zendeskgarden/react-tables"
 
 interface Attachment {
-    filename: string
+    contentType: string
     contentUrl: string
+    filename: string
 }
 
-interface props {
-    attachments: Attachment[]
+export interface FilesObject {
+    files: Attachment[]
+    length: number
 }
 
 const OverflowMenu = (attachmentFileID: number) => {
@@ -59,29 +61,30 @@ const adjustColumnWidths = () => {
     return adjustedWidths
 }
 
-function FilesTable(attachments: props["attachments"]) {
+function FilesTable(files: FilesObject[]) {
     const widths = adjustColumnWidths()
-    if (attachments.attachments.length === 0) return "No attachments found."
-    console.log(attachments)
+    if (files.length === 0) return "No attachments found."
+    const fileAttachments = Object.values(files)[0]
+    console.log(files)
 
     return (
-        <div>
-            <Table>
-                <Head>
-                    <HeaderRow>
-                        <HeaderCell>File name</HeaderCell>
-                        <HeaderCell
-                            style={{
-                                width: widths.actions,
-                                textAlign: "right",
-                            }}
-                        >
-                            Action
-                        </HeaderCell>
-                    </HeaderRow>
-                </Head>
-                <Body>
-                    {attachments.map((attachment, index) => (
+        <Table>
+            <Head>
+                <HeaderRow>
+                    <HeaderCell>File name</HeaderCell>
+                    <HeaderCell
+                        style={{
+                            width: widths.actions,
+                            textAlign: "right",
+                        }}
+                    >
+                        Action
+                    </HeaderCell>
+                </HeaderRow>
+            </Head>
+            <Body>
+                {fileAttachments.map(
+                    (attachment: Attachment, index: number) => (
                         <Row key={index}>
                             <Cell>{attachment.filename}</Cell>
                             <Cell
@@ -94,10 +97,10 @@ function FilesTable(attachments: props["attachments"]) {
                                 {OverflowMenu(attachment.filename)}
                             </Cell>
                         </Row>
-                    ))}
-                </Body>
-            </Table>
-        </div>
+                    ),
+                )}
+            </Body>
+        </Table>
     )
 }
 

@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react"
 import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
-import FilesTable from "./FilesTable"
+import FilesTable, { FilesObject } from "./FilesTable"
 
 declare const ZAFClient: any
 
 const NavTabs = () => {
     const [selectedTab, setSelectedTab] = useState("Files")
-    const [attachments, setAttachments] = useState([])
+    const [attachments, setAttachments] = useState<FilesObject[]>([])
 
     useEffect(() => {
         const zafClient = ZAFClient.init()
         const fetchAttachments = async () => {
             try {
                 const data = await zafClient.get("ticket.conversation")
-                console.log(data)
                 const fetchedAttachments = data["ticket.conversation"].flatMap(
                     (attachmentObj: { attachments: any }) =>
                         attachmentObj.attachments || [],
@@ -35,7 +34,7 @@ const NavTabs = () => {
                     <Tab item="Images">Images</Tab>
                 </TabList>
                 <TabPanel item="Files">
-                    <FilesTable attachments={attachments} />
+                    <FilesTable files={attachments} />
                 </TabPanel>
                 <TabPanel item="Images">
                     The sugar maple is one of America’s most-loved trees. In

@@ -55,7 +55,7 @@ class App extends React.Component<Props, State> {
     render() {
         return (
             <ThemeProvider theme={{ ...DEFAULT_THEME }}>
-                <Grid debug>
+                <Grid>
                     <Row>
                         <Col>
                             <NavTabs />
