@@ -1,6 +1,8 @@
 import React from "react"
 import { Col, Row as GridRow } from "@zendeskgarden/react-grid"
-import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
+import { Menu, Item, IMenuProps } from "@zendeskgarden/react-dropdowns.next"
+import { Tooltip } from "@zendeskgarden/react-tooltips"
+
 import {
     Body,
     Cell,
@@ -10,6 +12,7 @@ import {
     Row,
     Table,
 } from "@zendeskgarden/react-tables"
+import { Button } from "@zendeskgarden/react-buttons"
 
 interface dataEntry {
     attachments: FilesObject[]
@@ -28,66 +31,57 @@ export interface FilesObject {
 
 const OverflowMenu = (attachmentFileID: number) => {
     return (
-        <GridRow justifyContent="center">
-            <Col>
-                <Menu hasArrow={false} isCompact button="">
-                    <Item
-                        value="view"
-                        onClick={() => console.log(attachmentFileID)}
-                    >
-                        View
-                    </Item>
-                    <Item
-                        value="download"
-                        onClick={() => console.log(attachmentFileID)}
-                    >
-                        Download
-                    </Item>
-                    <Item
-                        value="delete"
-                        onClick={() => console.log(attachmentFileID)}
-                    >
-                        Delete
-                    </Item>
-                </Menu>
-            </Col>
-        </GridRow>
+        <Menu
+            button={(props) => (
+                <Button {...props} size="small" isPill focusInset>
+                    ::
+                </Button>
+            )}
+        >
+            <Item value="view" onClick={() => console.log(attachmentFileID)}>
+                View
+            </Item>
+            <Item
+                value="download"
+                onClick={() => console.log(attachmentFileID)}
+            >
+                Download
+            </Item>
+            <Item value="delete" onClick={() => console.log(attachmentFileID)}>
+                Delete
+            </Item>
+        </Menu>
     )
-}
-
-const adjustColumnWidths = () => {
-    const adjustedWidths = {
-        filename: "auto",
-        date: "auto",
-        actions: "auto",
-    }
-
-    return adjustedWidths
 }
 
 function formatDate(date: string): string {
     const cdate = new Date(date)
-    const options = { year: "numeric", month: "short", day: "numeric" }
+    const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: false,
+    } as const
     date = cdate.toLocaleDateString("en-us", options)
     return date
 }
 
 function FilesTable(files: FilesObject[]): React.ReactNode {
-    const widths = adjustColumnWidths()
     if (files.length === 0) return "No attachments found."
     const fileAttachments = Object.values(files)[0]
+    console.log(fileAttachments)
 
     return (
-        <Table>
+        <Table size="small" style={{ minWidth: 450 }}>
             <Head>
                 <HeaderRow>
                     <HeaderCell style={{ width: "60%" }}>File name</HeaderCell>
-                    <HeaderCell style={{ width: "20%", textAlign: "right" }}>
+                    <HeaderCell style={{ width: "30%", textAlign: "center" }}>
                         Date
                     </HeaderCell>
-                    <HeaderCell style={{ width: "20%", textAlign: "right" }}>
-                        Action
-                    </HeaderCell>
+                    <HeaderCell style={{ width: "10%" }} />
                 </HeaderRow>
             </Head>
             <Body>
@@ -95,18 +89,20 @@ function FilesTable(files: FilesObject[]): React.ReactNode {
                     entry.attachments.map((attachment, attachmentIndex) => (
                         <Row key={`${index}-${attachmentIndex}`}>
                             <Cell
+                                isTruncated
                                 style={{
                                     width: "60%",
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
                                 }}
                             >
                                 {attachment.filename}
                             </Cell>
-                            <Cell style={{ width: "20%", textAlign: "right" }}>
+                            <Cell style={{ width: "30%", textAlign: "right" }}>
                                 {formatDate(entry.timestamp)}
                             </Cell>
-                            <Cell style={{ width: "20%", textAlign: "right" }}>
+                            <Cell
+                                hasOverflow
+                                style={{ width: "10%", textAlign: "right" }}
+                            >
                                 {OverflowMenu(attachment.filename)}
                             </Cell>
                         </Row>
