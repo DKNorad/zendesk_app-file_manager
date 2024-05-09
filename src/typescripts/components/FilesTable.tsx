@@ -7,11 +7,14 @@ import {
     Head,
     HeaderCell,
     HeaderRow,
-    OverflowButton,
     Row,
     Table,
 } from "@zendeskgarden/react-tables"
 
+interface dataEntry {
+    attachments: FilesObject[]
+    timestamp: string
+}
 interface Attachment {
     contentType: string
     contentUrl: string
@@ -55,49 +58,59 @@ const OverflowMenu = (attachmentFileID: number) => {
 const adjustColumnWidths = () => {
     const adjustedWidths = {
         filename: "auto",
+        date: "auto",
         actions: "auto",
     }
 
     return adjustedWidths
 }
 
-function FilesTable(files: FilesObject[]) {
+function formatDate(date: string): string {
+    const cdate = new Date(date)
+    const options = { year: "numeric", month: "short", day: "numeric" }
+    date = cdate.toLocaleDateString("en-us", options)
+    return date
+}
+
+function FilesTable(files: FilesObject[]): React.ReactNode {
     const widths = adjustColumnWidths()
     if (files.length === 0) return "No attachments found."
     const fileAttachments = Object.values(files)[0]
-    console.log(files)
 
     return (
         <Table>
             <Head>
                 <HeaderRow>
-                    <HeaderCell>File name</HeaderCell>
-                    <HeaderCell
-                        style={{
-                            width: widths.actions,
-                            textAlign: "right",
-                        }}
-                    >
+                    <HeaderCell style={{ width: "60%" }}>File name</HeaderCell>
+                    <HeaderCell style={{ width: "20%", textAlign: "right" }}>
+                        Date
+                    </HeaderCell>
+                    <HeaderCell style={{ width: "20%", textAlign: "right" }}>
                         Action
                     </HeaderCell>
                 </HeaderRow>
             </Head>
             <Body>
-                {fileAttachments.map(
-                    (attachment: Attachment, index: number) => (
-                        <Row key={index}>
-                            <Cell>{attachment.filename}</Cell>
+                {fileAttachments.flatMap((entry: dataEntry, index: number) =>
+                    entry.attachments.map((attachment, attachmentIndex) => (
+                        <Row key={`${index}-${attachmentIndex}`}>
                             <Cell
-                                hasOverflow
                                 style={{
-                                    width: widths.actions,
-                                    textAlign: "right",
+                                    width: "60%",
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
                                 }}
                             >
+                                {attachment.filename}
+                            </Cell>
+                            <Cell style={{ width: "20%", textAlign: "right" }}>
+                                {formatDate(entry.timestamp)}
+                            </Cell>
+                            <Cell style={{ width: "20%", textAlign: "right" }}>
                                 {OverflowMenu(attachment.filename)}
                             </Cell>
                         </Row>
-                    ),
+                    )),
                 )}
             </Body>
         </Table>

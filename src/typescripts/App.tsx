@@ -1,7 +1,7 @@
 import React from "react"
 import { ThemeProvider, DEFAULT_THEME } from "@zendeskgarden/react-theming"
 import { Grid, Row, Col } from "@zendeskgarden/react-grid"
-import { resizeContainer, escapeSpecialChars as escape } from "./lib/helpers"
+import { resizeContainer } from "./lib/helpers"
 import NavTabs from "./components/NavTabs"
 
 const MAX_HEIGHT = 1000
@@ -27,8 +27,7 @@ class App extends React.Component<Props, State> {
     }
 
     async componentDidMount() {
-        // await this.fetchAttachments()
-        await this.resizeContainer()
+        this._client.invoke("resize", { width: "100%", height: "700px" })
     }
 
     async fetchAttachments() {
@@ -45,6 +44,7 @@ class App extends React.Component<Props, State> {
     }
 
     async resizeContainer() {
+        console.log(document.body.clientHeight)
         try {
             await resizeContainer(this._client, MAX_HEIGHT)
         } catch (error) {
