@@ -1,7 +1,5 @@
 import React from "react"
-import { Col, Row as GridRow } from "@zendeskgarden/react-grid"
-import { Menu, Item, IMenuProps } from "@zendeskgarden/react-dropdowns.next"
-import { Tooltip } from "@zendeskgarden/react-tooltips"
+import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 
 import {
     Body,
