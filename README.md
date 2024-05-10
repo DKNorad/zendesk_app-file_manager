@@ -1,4 +1,4 @@
-# zendesk_app-file_viewer
+# File Viewer
 
 ZenDesk App that allows you to directly view support ticket attachments in the browser
 
