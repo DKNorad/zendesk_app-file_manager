@@ -1,10 +1,7 @@
 import React from "react"
 import { ThemeProvider, DEFAULT_THEME } from "@zendeskgarden/react-theming"
 import { Grid, Row, Col } from "@zendeskgarden/react-grid"
-import { resizeContainer } from "./lib/helpers"
 import NavTabs from "./components/NavTabs"
-
-const MAX_HEIGHT = 1000
 
 interface Props {
     client: any
@@ -40,15 +37,6 @@ class App extends React.Component<Props, State> {
             this.setState({ attachments })
         } catch (error) {
             console.error("Error fetching attachments:", error)
-        }
-    }
-
-    async resizeContainer() {
-        console.log(document.body.clientHeight)
-        try {
-            await resizeContainer(this._client, MAX_HEIGHT)
-        } catch (error) {
-            console.error("Error resizing container:", error)
         }
     }
 
