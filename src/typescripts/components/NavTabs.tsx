@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
 import FilesTable from "./FilesTable"
 
@@ -115,6 +115,18 @@ function getAttachmentData(
 
 function NavTabs(): React.ReactNode {
     const [selectedTab, setSelectedTab] = useState("Files")
+    const [fetchedAttachments, setFetchedAttachments] = useState<
+        collectedAttachmens[] | null
+    >(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getCommentData()
+            setFetchedAttachments(data || null)
+        }
+
+        fetchData()
+    }, [])
 
     return (
         <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
@@ -123,7 +135,11 @@ function NavTabs(): React.ReactNode {
                 <Tab item="Images">Images</Tab>
             </TabList>
             <TabPanel item="Files">
-                <FilesTable files={getCommentData()} />
+                {fetchedAttachments && fetchedAttachments.length > 0 ? (
+                    <FilesTable attachments={fetchedAttachments} />
+                ) : (
+                    <p>No attachments found.</p>
+                )}
             </TabPanel>
             <TabPanel item="Images">
                 The sugar maple is one of America’s most-loved trees. In fact,

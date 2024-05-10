@@ -1,6 +1,5 @@
 import React from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
-
 import {
     Body,
     Cell,
@@ -13,6 +12,9 @@ import {
 import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
 
+interface attachmentsObj {
+    attachments: Array<collectedAttachmens>
+}
 const OverflowMenu = (attachmentFileID: number) => {
     return (
         <Menu
@@ -52,10 +54,9 @@ function formatDate(date: string): string {
     return date
 }
 
-function FilesTable(files: Array<collectedAttachmens>): React.ReactNode {
-    console.log(files)
+function FilesTable(attachments: attachmentsObj): React.ReactNode {
     return (
-        <Table size="small" style={{ minWidth: 450 }}>
+        <Table size="small">
             <Head>
                 <HeaderRow>
                     <HeaderCell style={{ width: "60%" }}>File name</HeaderCell>
@@ -66,27 +67,29 @@ function FilesTable(files: Array<collectedAttachmens>): React.ReactNode {
                 </HeaderRow>
             </Head>
             <Body>
-                {files.map((attachment: collectedAttachmens, index: number) => (
-                    <Row key={index}>
-                        <Cell
-                            isTruncated
-                            style={{
-                                width: "60%",
-                            }}
-                        >
-                            {attachment.fileName}
-                        </Cell>
-                        <Cell style={{ width: "30%", textAlign: "right" }}>
-                            {formatDate(attachment.timestamp)}
-                        </Cell>
-                        <Cell
-                            hasOverflow
-                            style={{ width: "10%", textAlign: "right" }}
-                        >
-                            {OverflowMenu(attachment.fileName)}
-                        </Cell>
-                    </Row>
-                ))}
+                {attachments.attachments.map(
+                    (attachment: collectedAttachmens, index: number) => (
+                        <Row key={index}>
+                            <Cell
+                                isTruncated
+                                style={{
+                                    width: "60%",
+                                }}
+                            >
+                                {attachment.fileName}
+                            </Cell>
+                            <Cell style={{ width: "30%", textAlign: "right" }}>
+                                {formatDate(attachment.timestamp)}
+                            </Cell>
+                            <Cell
+                                hasOverflow
+                                style={{ width: "10%", textAlign: "right" }}
+                            >
+                                {OverflowMenu(attachment.fileName)}
+                            </Cell>
+                        </Row>
+                    ),
+                )}
             </Body>
         </Table>
     )
