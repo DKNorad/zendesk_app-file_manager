@@ -17,6 +17,7 @@ const config: webpack.Configuration = {
             "./src/typescripts/locations/ticket_sidebar.tsx",
             "./src/index.css",
         ],
+        modal: ["./src/typescripts/locations/modal.tsx"],
     },
     output: {
         filename: "[name].js",
@@ -79,6 +80,15 @@ const config: webpack.Configuration = {
             vendorJs: externalAssets.js,
             template: "./src/templates/iframe.html",
             filename: "iframe.html",
+            chunks: ["app"],
+        }),
+        new HtmlWebpackPlugin({
+            warning:
+                "AUTOMATICALLY GENERATED FROM ./src/templates/iframe.html - DO NOT MODIFY THIS FILE DIRECTLY",
+            vendorJs: externalAssets.js,
+            template: "./src/templates/modal.html",
+            filename: "modal.html",
+            chunks: ["modal"],
         }),
     ],
 }

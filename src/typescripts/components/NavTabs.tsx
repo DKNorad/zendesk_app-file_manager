@@ -141,12 +141,7 @@ function NavTabs(): React.ReactNode {
                     <p>No attachments found.</p>
                 )}
             </TabPanel>
-            <TabPanel item="Images">
-                The sugar maple is one of America’s most-loved trees. In fact,
-                more states have claimed it as their state tree than any other
-                single species—for New York, West Virginia, Wisconsin, and
-                Vermont, the maple tree stands alone.
-            </TabPanel>
+            <TabPanel item="Images">123</TabPanel>
         </Tabs>
     )
 }
