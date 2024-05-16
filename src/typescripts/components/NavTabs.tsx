@@ -54,11 +54,11 @@ export interface collectedAttachmens {
     timestamp: string
     messageID: number
     ticketID: number
+    attachmentID: number
 }
 
 async function getCommentData() {
     try {
-        // Await the promise to resolve and get the ticket ID from the response
         const ticketResponse = await zafClient.get("ticket.id")
         const ticketId = ticketResponse["ticket.id"]
 
@@ -72,7 +72,6 @@ async function getCommentData() {
             contentType: "application/json",
         }
 
-        // Make the API request with the retrieved ticket ID
         const response = await zafClient.request(options)
 
         return getAttachmentData(response, null, ticketId)
@@ -104,6 +103,7 @@ function getAttachmentData(
                         contentType: attachment.content_type,
                         messageID: comment.id,
                         ticketID: ticketID,
+                        attachmentID: attachment.id,
                     }
                     collectedAttachmentData.push(obj)
                 }

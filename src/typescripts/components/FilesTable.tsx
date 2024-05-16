@@ -1,5 +1,4 @@
 import React from "react"
-import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import {
     Body,
     Cell,
@@ -9,62 +8,11 @@ import {
     Row,
     Table,
 } from "@zendeskgarden/react-tables"
-import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
+import OverflowMenu from "./OverflowMenu"
 
 interface attachmentsObj {
     attachments: Array<collectedAttachmens>
-}
-
-// async function openFile(url: string) {
-//     const blob = await fetch(url).then((r) => r.blob())
-//     const fileURL = URL.createObjectURL(blob)
-//     const newWindow = window.open(fileURL)
-//     return FileBox(fileURL)
-//     setTimeout(function () {
-//         newWindow.document.title = "Spaceman"
-//     }, 100)
-// }
-
-async function openModal(data: string) {
-    const client = ZAFClient.init()
-
-    const blob = await fetch(data).then((r) => r.blob())
-    const fileURL = URL.createObjectURL(blob)
-
-    client
-        .invoke("instances.create", {
-            location: "modal",
-            url: "assets/modal.html",
-            size: { width: "600px", height: "700px" },
-            title: "File Viewer",
-        })
-        .then(function () {})
-}
-
-const OverflowMenu = (attachmentFileUrl: string) => {
-    return (
-        <Menu
-            button={(props) => (
-                <Button {...props} size="small" isNeutral focusInset>
-                    ::
-                </Button>
-            )}
-        >
-            <Item value="view" onClick={() => openModal(attachmentFileUrl)}>
-                View
-            </Item>
-            <Item
-                value="download"
-                onClick={() => console.log(attachmentFileUrl)}
-            >
-                Download
-            </Item>
-            <Item value="delete" onClick={() => console.log(attachmentFileUrl)}>
-                Delete
-            </Item>
-        </Menu>
-    )
 }
 
 function formatDate(date: string): string {
@@ -118,34 +66,44 @@ function FilesTable(attachments: attachmentsObj): React.ReactNode {
             </Head>
             <Body>
                 {attachments.attachments.map(
-                    (attachment: collectedAttachmens, index: number) => (
-                        <Row key={index}>
-                            <Cell
-                                isTruncated
-                                style={{
-                                    width: "45%",
-                                }}
-                            >
-                                {attachment.fileName}
-                            </Cell>
-                            <Cell
-                                style={{ width: "22.5%", textAlign: "right" }}
-                            >
-                                {formatBytes(attachment.size)}
-                            </Cell>
-                            <Cell
-                                style={{ width: "22.5%", textAlign: "right" }}
-                            >
-                                {formatDate(attachment.timestamp)}
-                            </Cell>
-                            <Cell
-                                hasOverflow
-                                style={{ width: "10%", textAlign: "right" }}
-                            >
-                                {OverflowMenu(attachment.contentUrl)}
-                            </Cell>
-                        </Row>
-                    ),
+                    (attachment: collectedAttachmens, index: number) =>
+                        attachment.fileName !== "redacted.txt" ? (
+                            <Row key={index}>
+                                <Cell
+                                    isTruncated
+                                    style={{
+                                        width: "45%",
+                                    }}
+                                >
+                                    {attachment.fileName}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "22.5%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {formatBytes(attachment.size)}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "22.5%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {formatDate(attachment.timestamp)}
+                                </Cell>
+                                <Cell
+                                    hasOverflow
+                                    style={{
+                                        width: "10%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {OverflowMenu(attachment)}
+                                </Cell>
+                            </Row>
+                        ) : null,
                 )}
             </Body>
         </Table>
