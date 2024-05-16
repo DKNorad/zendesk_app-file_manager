@@ -1,6 +1,7 @@
+// src/locations/modal.tsx
 import React from "react"
 import ReactDOM from "react-dom"
-import Modal from "../Modal"
+import Modal from "../components/Modal"
 
 declare const ZAFClient: any
 
