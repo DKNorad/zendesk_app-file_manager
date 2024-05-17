@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { collectedAttachmens } from "./NavTabs"
 
-interface Props {
-    client: any
-    appData: any
-}
-
-const Modal: React.FC<Props> = ({ client, appData }) => {
+const Modal: React.FC = () => {
     const [blobText, setBlobText] = useState<string>("")
     const contentUrl = parseParams(window.location.hash)
 

@@ -9,5 +9,5 @@ const client = ZAFClient.init()
 const container = document.getElementById("modal")
 
 client.on("app.registered", function (appData: any) {
-    ReactDOM.render(<Modal client={client} appData={appData} />, container)
+    ReactDOM.render(<Modal />, container)
 })

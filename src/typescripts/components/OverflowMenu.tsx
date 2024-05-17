@@ -3,6 +3,7 @@ import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
 import ModalContent from "./ModalContent"
+import { title } from "process"
 
 interface Props {
     attachment: collectedAttachmens
@@ -32,7 +33,7 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
         }
     }, [])
 
-    const openFile = useCallback(async (url: string) => {
+    const openFile = useCallback(async () => {
         try {
             const response = await fetch(attachment.contentUrl)
             if (!response.ok) {
@@ -43,7 +44,18 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
 
             const blob = await response.blob()
             const fileURL = URL.createObjectURL(blob)
-            window.open(fileURL)
+
+            const win = window.open("")
+
+            if (win.document) {
+                win.document.write(
+                    "<html><head><title>" +
+                        attachment.fileName +
+                        '</title></head><body height="100%" width="100%"><iframe src="' +
+                        fileURL +
+                        '" height="100%" width="100%" frameborder="0"></iframe></body></html>',
+                )
+            }
         } catch (error) {
             console.error("Failed to open the file:", error)
         }
@@ -72,7 +84,7 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
                 </Button>
             )}
         >
-            <Item value="view" onClick={() => openFile(attachment.contentUrl)}>
+            <Item value="view" onClick={() => openFile()}>
                 View
             </Item>
             <Item
