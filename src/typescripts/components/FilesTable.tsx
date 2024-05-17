@@ -100,7 +100,7 @@ function FilesTable(attachments: attachmentsObj): React.ReactNode {
                                         textAlign: "right",
                                     }}
                                 >
-                                    {OverflowMenu(attachment)}
+                                    <OverflowMenu attachment={attachment} />
                                 </Cell>
                             </Row>
                         ) : null,

@@ -1,47 +1,38 @@
-import React from "react"
+import React, { useCallback } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
+import ModalContent from "./ModalContent"
 
-declare const ZAFClient: any
+interface Props {
+    attachment: collectedAttachmens
+}
 
-const OverflowMenu = (attachment: collectedAttachmens) => {
-    const openModal = () => {
-        // Initialize Zendesk client and open Zendesk modal
-        const client = (window as any).ZAFClient.init()
-        client
-            .invoke("instances.create", {
-                location: "modal",
-                url: "assets/modal.html",
-                size: { width: "100%", height: "600px" },
-            })
-            .then((modalContext: any) => {
-                const modalClient = client.instance(
-                    modalContext["instances.create"][0].instanceGuid,
-                )
-                modalClient.on("modal.close", () => {
-                    client.invoke("instances.close", modalContext)
-                })
-            })
-    }
-
-    async function deleteAttachment() {
-        const zafClient = ZAFClient.init()
-
+const OverflowMenu: React.FC<Props> = ({ attachment }) => {
+    const openModal = useCallback(async (url: string) => {
         try {
+            const client = (window as any).ZAFClient.init()
             const options = {
-                url: `/api/v2/tickets/${attachment.ticketID}/comments/${attachment.messageID}/attachments/${attachment.attachmentID}/redact`,
-                type: "PUT",
-                contentType: "application/json",
+                location: "modal",
+                url: "assets/modal.html#file=" + url,
+                size: { width: "800px", height: "600px" },
             }
 
-            await zafClient.request(options)
-        } catch (error) {
-            console.error("Failed to redact attachment:", error)
-        }
-    }
+            const modalContext = await client.invoke(
+                "instances.create",
+                options,
+            )
+            const modalClient = client.instance(
+                modalContext["instances.create"][0].instanceGuid,
+            )
 
-    async function openFile() {
+            modalClient.on("modal.close", () => {})
+        } catch (error) {
+            console.error("Failed to open modal:", error)
+        }
+    }, [])
+
+    const openFile = useCallback(async (url: string) => {
         try {
             const response = await fetch(attachment.contentUrl)
             if (!response.ok) {
@@ -56,7 +47,22 @@ const OverflowMenu = (attachment: collectedAttachmens) => {
         } catch (error) {
             console.error("Failed to open the file:", error)
         }
-    }
+    }, [])
+
+    const deleteAttachment = useCallback(async () => {
+        try {
+            const client = (window as any).ZAFClient.init()
+            const options = {
+                url: `/api/v2/tickets/${attachment.ticketID}/comments/${attachment.messageID}/attachments/${attachment.attachmentID}/redact`,
+                type: "PUT",
+                contentType: "application/json",
+            }
+
+            await client.request(options)
+        } catch (error) {
+            console.error("Failed to redact attachment:", error)
+        }
+    }, [attachment.attachmentID, attachment.messageID, attachment.ticketID])
 
     return (
         <Menu
@@ -66,7 +72,7 @@ const OverflowMenu = (attachment: collectedAttachmens) => {
                 </Button>
             )}
         >
-            <Item value="view" onClick={() => openFile()}>
+            <Item value="view" onClick={() => openFile(attachment.contentUrl)}>
                 View
             </Item>
             <Item
@@ -75,7 +81,7 @@ const OverflowMenu = (attachment: collectedAttachmens) => {
             >
                 Download
             </Item>
-            <Item value="delete" onClick={() => deleteAttachment()}>
+            <Item value="delete" onClick={deleteAttachment}>
                 Delete
             </Item>
         </Menu>

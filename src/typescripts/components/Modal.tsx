@@ -1,37 +1,40 @@
-// src/components/Modal.tsx
-import React from "react"
-import ModalContent from "./ModalContent"
+import React, { useEffect, useState } from "react"
 import { collectedAttachmens } from "./NavTabs"
 
 interface Props {
     client: any
     appData: any
-    attachment: collectedAttachmens
 }
 
-class Modal extends React.Component<Props> {
-    _client: any
-    _appData: any
-    attachment: collectedAttachmens
+const Modal: React.FC<Props> = ({ client, appData }) => {
+    const [blobText, setBlobText] = useState<string>("")
+    const contentUrl = parseParams(window.location.hash)
 
-    constructor(props: Props) {
-        super(props)
-        this._client = props.client
-        this._appData = props.appData
-        this.attachment = props.attachment
+    useEffect(() => {
+        const readFile = async () => {
+            try {
+                const response = await fetch(contentUrl)
+                if (!response.ok) {
+                    throw new Error(
+                        `Network response was not ok: ${response.statusText}`,
+                    )
+                }
+                const blob = await response.blob()
+                const text = await blob.text()
+                setBlobText(text)
+            } catch (error) {
+                console.error("Failed to open the file:", error)
+            }
+        }
+
+        readFile()
+    }, [contentUrl])
+
+    function parseParams(paramString: string): string {
+        return paramString.slice(6)
     }
 
-    render() {
-        return 123
-    }
-
-    /**
-     * Handle error
-     * @param {Object} error error object
-     */
-    _handleError(error: any): void {
-        console.log("An error is handled here: ", error.message)
-    }
+    return <div>{blobText}</div>
 }
 
 export default Modal
