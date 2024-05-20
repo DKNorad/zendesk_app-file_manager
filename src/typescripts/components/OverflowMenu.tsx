@@ -2,11 +2,37 @@ import React, { useCallback } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
-import ModalContent from "./ModalContent"
-import { title } from "process"
+// import ModalContent from "./ModalContent"
 
 interface Props {
     attachment: collectedAttachmens
+}
+
+function getMimeType(file) {
+    const reader = new FileReader()
+    reader.onloadend = function () {
+        const arr = new Uint8Array(reader.result).subarray(0, 4)
+        let header = ""
+        for (let i = 0; i < arr.length; i++) {
+            header += arr[i].toString(16)
+        }
+        console.log("header: ", header)
+        switch (header) {
+            case "89504e47":
+                return "image/png"
+            case "47494638":
+                return "image/gif"
+            case "25504446":
+                return "application/pdf"
+            case "ffd8ffe0":
+            case "ffd8ffe1":
+            case "ffd8ffe2":
+                return "image/jpeg"
+            default:
+                return "unknown"
+        }
+    }
+    reader.readAsArrayBuffer(file)
 }
 
 const OverflowMenu: React.FC<Props> = ({ attachment }) => {
@@ -16,7 +42,10 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
             const options = {
                 location: "modal",
                 url: "assets/modal.html#file=" + url,
-                size: { width: "800px", height: "600px" },
+                size: {
+                    width: "80vw",
+                    height: "80vh",
+                },
             }
 
             const modalContext = await client.invoke(
@@ -27,7 +56,10 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
                 modalContext["instances.create"][0].instanceGuid,
             )
 
-            modalClient.on("modal.close", () => {})
+            modalClient.on("modal.close", () => {
+                URL.revokeObjectURL(url)
+                client.invoke("instances.close", modalContext)
+            })
         } catch (error) {
             console.error("Failed to open modal:", error)
         }
@@ -43,19 +75,21 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
             }
 
             const blob = await response.blob()
+
+            // console.log("fileType: ", getMimeType(blob))
+
             const fileURL = URL.createObjectURL(blob)
+            openModal(fileURL)
+            // const win = window.open("", "_blank")
 
-            const win = window.open("")
-
-            if (win.document) {
-                win.document.write(
-                    "<html><head><title>" +
-                        attachment.fileName +
-                        '</title></head><body height="100%" width="100%"><iframe src="' +
-                        fileURL +
-                        '" height="100%" width="100%" frameborder="0"></iframe></body></html>',
-                )
-            }
+            // if (win && win.document) {
+            //     const html = `<html><head><title>${attachment.fileName}</title></head><body height="100%" width="100%"><iframe src="${fileURL}" height="100%" width="100%" frameborder="0"></iframe></body></html>`
+            //     win.document.write(html)
+            // } else {
+            //     console.error(
+            //         "Failed to open the file: Window or document is null",
+            //     )
+            // }
         } catch (error) {
             console.error("Failed to open the file:", error)
         }
