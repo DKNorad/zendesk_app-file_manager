@@ -6,40 +6,13 @@ import ConfirmDeleteModal from "./DeleteModal"
 import { getZendeskClient } from "./ZenDeskClient"
 import ModalContent from "./ModalContent"
 import { renderToString } from "react-dom/server"
-// import ModalContent from "./ModalContent"
 
 interface Props {
     attachment: collectedAttachmens
+    fileType: string
 }
 
-function getMimeType(file) {
-    const reader = new FileReader()
-    reader.onloadend = function () {
-        const arr = new Uint8Array(reader.result).subarray(0, 4)
-        let header = ""
-        for (let i = 0; i < arr.length; i++) {
-            header += arr[i].toString(16)
-        }
-        console.log("header: ", header)
-        switch (header) {
-            case "89504e47":
-                return "image/png"
-            case "47494638":
-                return "image/gif"
-            case "25504446":
-                return "application/pdf"
-            case "ffd8ffe0":
-            case "ffd8ffe1":
-            case "ffd8ffe2":
-                return "image/jpeg"
-            default:
-                return "unknown"
-        }
-    }
-    reader.readAsArrayBuffer(file)
-}
-
-const OverflowMenu: React.FC<Props> = ({ attachment }) => {
+const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
     // For the delete confirmation modal
     const [isModalVisible, setModalVisible] = useState(false)
     const [selectedFileName, setSelectedFileName] = useState("")
@@ -63,7 +36,11 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
                     )
                     client.on("modalReady", function setHtml() {
                         const modalContentString = renderToString(
-                            <ModalContent data={url} />,
+                            fileType === "image" ? (
+                                <ModalContent data={url} fileType="image" />
+                            ) : (
+                                <ModalContent data={url} fileType="text" />
+                            ),
                         )
                         modalClient.trigger("drawData", modalContentString)
                         client.off("modalReady", setHtml)
@@ -77,20 +54,25 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
 
     const openFile = useCallback(async (openType: string) => {
         try {
-            const response = await fetch(attachment.contentUrl)
-            if (!response.ok) {
-                throw new Error(
-                    `Network response was not ok: ${response.statusText}`,
-                )
-            }
-
-            if (openType === "Modal") {
-                const text = await response.text()
-                openFileModal(text)
+            if (fileType === "image" && openType === "Modal") {
+                openFileModal(attachment.contentUrl)
             } else {
-                const blob = await response.blob()
-                const fileURL = URL.createObjectURL(blob)
-                window.open(fileURL, "_blank")
+                const response = await fetch(attachment.contentUrl)
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Network response was not ok: ${response.statusText}`,
+                    )
+                }
+
+                if (openType === "Modal") {
+                    const text = await response.text()
+                    openFileModal(text)
+                } else {
+                    const blob = await response.blob()
+                    const fileURL = URL.createObjectURL(blob)
+                    window.open(fileURL, "_blank")
+                }
             }
         } catch (error) {
             console.error("Failed to open the file:", error)
@@ -133,12 +115,16 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
                 <Item value="viewNewTab" onClick={() => openFile("NewTab")}>
                     View (New Tab)
                 </Item>
-                <Item
-                    value="download"
-                    onClick={() => window.open(attachment.contentUrl, "_blank")}
-                >
-                    Download
-                </Item>
+                {fileType !== "image" && (
+                    <Item
+                        value="download"
+                        onClick={() =>
+                            window.open(attachment.contentUrl, "_blank")
+                        }
+                    >
+                        Download
+                    </Item>
+                )}
                 <Item value="delete" onClick={handleDeleteClick}>
                     Delete
                 </Item>

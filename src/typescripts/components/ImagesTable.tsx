@@ -49,47 +49,68 @@ function formatBytes(bytes: number, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-function FilesTable(attachments: attachmentsObj): React.ReactNode {
-    console.log(attachments)
+const ImagesTable: React.FC<attachmentsObj> = ({ attachments }) => {
     return (
-        <Table size="small">
+        <Table>
             <Head>
                 <HeaderRow>
-                    <HeaderCell style={{ width: "45%" }}>File name</HeaderCell>
-                    <HeaderCell style={{ width: "22.5%", textAlign: "center" }}>
+                    <HeaderCell style={{ width: "20%" }} />
+                    <HeaderCell style={{ width: "30%" }}>Image name</HeaderCell>
+                    <HeaderCell style={{ width: "20%", textAlign: "center" }}>
                         Size
                     </HeaderCell>
-                    <HeaderCell style={{ width: "22.5%", textAlign: "center" }}>
+                    <HeaderCell style={{ width: "20%", textAlign: "center" }}>
                         Date
                     </HeaderCell>
                     <HeaderCell style={{ width: "10%" }} />
                 </HeaderRow>
             </Head>
             <Body>
-                {attachments.attachments.map(
+                {attachments.map(
                     (attachment: collectedAttachmens, index: number) =>
-                        attachment.fileName !== "redacted.txt" ? (
+                        attachment.fileName !== "redacted.txt" &&
+                        attachment.thumbnails &&
+                        attachment.thumbnails[0] ? (
                             <Row key={index}>
+                                <Cell
+                                    style={{
+                                        width: "20%",
+                                    }}
+                                >
+                                    <img
+                                        src={
+                                            attachment.thumbnails[0].content_url
+                                        }
+                                        alt={attachment.fileName}
+                                        style={{
+                                            maxWidth: "100%",
+                                            height: "auto",
+                                        }}
+                                    />
+                                </Cell>
                                 <Cell
                                     isTruncated
                                     style={{
-                                        width: "45%",
+                                        width: "30%",
+                                        verticalAlign: "middle",
                                     }}
                                 >
                                     {attachment.fileName}
                                 </Cell>
                                 <Cell
                                     style={{
-                                        width: "22.5%",
+                                        width: "20%",
                                         textAlign: "right",
+                                        verticalAlign: "middle",
                                     }}
                                 >
                                     {formatBytes(attachment.size)}
                                 </Cell>
                                 <Cell
                                     style={{
-                                        width: "22.5%",
+                                        width: "20%",
                                         textAlign: "right",
+                                        verticalAlign: "middle",
                                     }}
                                 >
                                     {formatDate(attachment.timestamp)}
@@ -99,11 +120,12 @@ function FilesTable(attachments: attachmentsObj): React.ReactNode {
                                     style={{
                                         width: "10%",
                                         textAlign: "right",
+                                        verticalAlign: "middle",
                                     }}
                                 >
                                     <OverflowMenu
                                         attachment={attachment}
-                                        fileType="text"
+                                        fileType="image"
                                     />
                                 </Cell>
                             </Row>
@@ -114,4 +136,4 @@ function FilesTable(attachments: attachmentsObj): React.ReactNode {
     )
 }
 
-export default FilesTable
+export default ImagesTable
