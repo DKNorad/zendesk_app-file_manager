@@ -1,7 +1,8 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
+import ConfirmDeleteModal from "./DeleteModal"
 // import ModalContent from "./ModalContent"
 
 interface Props {
@@ -36,6 +37,9 @@ function getMimeType(file) {
 }
 
 const OverflowMenu: React.FC<Props> = ({ attachment }) => {
+    const [isModalVisible, setModalVisible] = useState(false)
+    const [selectedFileName, setSelectedFileName] = useState("")
+
     const openModal = useCallback(async (url: string) => {
         try {
             const client = (window as any).ZAFClient.init()
@@ -105,32 +109,46 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
             }
 
             await client.request(options)
+            setModalVisible(false)
         } catch (error) {
             console.error("Failed to redact attachment:", error)
         }
     }, [attachment.attachmentID, attachment.messageID, attachment.ticketID])
 
+    const handleDeleteClick = useCallback(() => {
+        setSelectedFileName(attachment.fileName)
+        setModalVisible(true)
+    }, [attachment.fileName])
+
     return (
-        <Menu
-            button={(props) => (
-                <Button {...props} size="small" isNeutral focusInset>
-                    ::
-                </Button>
-            )}
-        >
-            <Item value="view" onClick={() => openFile()}>
-                View
-            </Item>
-            <Item
-                value="download"
-                onClick={() => window.open(attachment.contentUrl, "_blank")}
+        <>
+            <Menu
+                button={(props) => (
+                    <Button {...props} size="small" isNeutral focusInset>
+                        ::
+                    </Button>
+                )}
             >
-                Download
-            </Item>
-            <Item value="delete" onClick={deleteAttachment}>
-                Delete
-            </Item>
-        </Menu>
+                <Item value="view" onClick={openFile}>
+                    View
+                </Item>
+                <Item
+                    value="download"
+                    onClick={() => window.open(attachment.contentUrl, "_blank")}
+                >
+                    Download
+                </Item>
+                <Item value="delete" onClick={handleDeleteClick}>
+                    Delete
+                </Item>
+            </Menu>
+            <ConfirmDeleteModal
+                visible={isModalVisible}
+                onClose={() => setModalVisible(false)}
+                onDelete={deleteAttachment}
+                fileName={selectedFileName}
+            />
+        </>
     )
 }
 
