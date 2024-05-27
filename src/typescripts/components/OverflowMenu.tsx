@@ -3,6 +3,9 @@ import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { Button } from "@zendeskgarden/react-buttons"
 import { collectedAttachmens } from "./NavTabs"
 import ConfirmDeleteModal from "./DeleteModal"
+import { getZendeskClient } from "./ZenDeskClient"
+import ModalContent from "./ModalContent"
+import { renderToString } from "react-dom/server"
 // import ModalContent from "./ModalContent"
 
 interface Props {
@@ -37,39 +40,42 @@ function getMimeType(file) {
 }
 
 const OverflowMenu: React.FC<Props> = ({ attachment }) => {
+    // For the delete confirmation modal
     const [isModalVisible, setModalVisible] = useState(false)
     const [selectedFileName, setSelectedFileName] = useState("")
 
-    const openModal = useCallback(async (url: string) => {
+    // For the file view modal
+    const openFileModal = useCallback(async (url: string) => {
         try {
-            const client = (window as any).ZAFClient.init()
-            const options = {
-                location: "modal",
-                url: "assets/modal.html#file=" + url,
-                size: {
-                    width: "80vw",
-                    height: "80vh",
-                },
-            }
-
-            const modalContext = await client.invoke(
-                "instances.create",
-                options,
-            )
-            const modalClient = client.instance(
-                modalContext["instances.create"][0].instanceGuid,
-            )
-
-            modalClient.on("modal.close", () => {
-                URL.revokeObjectURL(url)
-                client.invoke("instances.close", modalContext)
-            })
+            const client = getZendeskClient()
+            client
+                .invoke("instances.create", {
+                    location: "modal",
+                    url: "assets/modal.html",
+                    size: {
+                        width: "80vw",
+                        height: "70vh",
+                    },
+                })
+                .then((modalContext: any) => {
+                    const modalClient = client.instance(
+                        modalContext["instances.create"][0].instanceGuid,
+                    )
+                    client.on("modalReady", function setHtml() {
+                        const modalContentString = renderToString(
+                            <ModalContent data={url} />,
+                        )
+                        modalClient.trigger("drawData", modalContentString)
+                        client.off("modalReady", setHtml)
+                    })
+                    modalClient.on("modal.close", function () {})
+                })
         } catch (error) {
             console.error("Failed to open modal:", error)
         }
     }, [])
 
-    const openFile = useCallback(async () => {
+    const openFile = useCallback(async (openType: string) => {
         try {
             const response = await fetch(attachment.contentUrl)
             if (!response.ok) {
@@ -78,22 +84,14 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
                 )
             }
 
-            const blob = await response.blob()
-
-            // console.log("fileType: ", getMimeType(blob))
-
-            const fileURL = URL.createObjectURL(blob)
-            openModal(fileURL)
-            // const win = window.open("", "_blank")
-
-            // if (win && win.document) {
-            //     const html = `<html><head><title>${attachment.fileName}</title></head><body height="100%" width="100%"><iframe src="${fileURL}" height="100%" width="100%" frameborder="0"></iframe></body></html>`
-            //     win.document.write(html)
-            // } else {
-            //     console.error(
-            //         "Failed to open the file: Window or document is null",
-            //     )
-            // }
+            if (openType === "Modal") {
+                const text = await response.text()
+                openFileModal(text)
+            } else {
+                const blob = await response.blob()
+                const fileURL = URL.createObjectURL(blob)
+                window.open(fileURL, "_blank")
+            }
         } catch (error) {
             console.error("Failed to open the file:", error)
         }
@@ -129,8 +127,11 @@ const OverflowMenu: React.FC<Props> = ({ attachment }) => {
                     </Button>
                 )}
             >
-                <Item value="view" onClick={openFile}>
+                <Item value="view" onClick={() => openFile("Modal")}>
                     View
+                </Item>
+                <Item value="viewNewTab" onClick={() => openFile("NewTab")}>
+                    View (New Tab)
                 </Item>
                 <Item
                     value="download"
