@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
 import FilesTable from "./FilesTable"
+import { getZendeskClient } from "./ZenDeskClient"
 
-declare const ZAFClient: any
-const zafClient = ZAFClient.init()
+const zafClient = getZendeskClient()
 
 // Defining the interfaces for the objects returned by the API.
 interface commentsObject {
