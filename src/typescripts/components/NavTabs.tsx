@@ -170,38 +170,45 @@ function getAttachmentData(
     const collectedImages = Array<collectedAttachmens>()
     const collectedPDF = Array<collectedAttachmens>()
     const collectedOther = Array<collectedAttachmens>()
+
     for (const comment of commentData.comments) {
         if (comment.attachments.length > 0) {
             for (const attachment of comment.attachments) {
+                if (attachment.file_name === "redacted.txt") {
+                    continue
+                }
+
                 if (fileType && !fileType.includes(attachment.content_type)) {
                     continue
+                }
+
+                const obj = {
+                    contentUrl: attachment.content_url,
+                    fileName: attachment.file_name,
+                    size: attachment.size,
+                    timestamp: comment.created_at,
+                    width: attachment.width,
+                    height: attachment.height,
+                    contentType: attachment.content_type,
+                    messageID: comment.id,
+                    ticketID: ticketID,
+                    attachmentID: attachment.id,
+                    thumbnails: attachment.thumbnails,
+                }
+
+                if (attachment.content_type.includes("image")) {
+                    collectedImages.push(obj)
+                } else if (attachment.content_type.includes("pdf")) {
+                    collectedPDF.push(obj)
+                } else if (attachment.content_type.includes("text")) {
+                    collectedText.push(obj)
                 } else {
-                    const obj = {
-                        contentUrl: attachment.content_url,
-                        fileName: attachment.file_name,
-                        size: attachment.size,
-                        timestamp: comment.created_at,
-                        width: attachment.width,
-                        height: attachment.height,
-                        contentType: attachment.content_type,
-                        messageID: comment.id,
-                        ticketID: ticketID,
-                        attachmentID: attachment.id,
-                        thumbnails: attachment.thumbnails,
-                    }
-                    if (attachment.content_type.includes("image")) {
-                        collectedImages.push(obj)
-                    } else if (attachment.content_type.includes("pdf")) {
-                        collectedPDF.push(obj)
-                    } else if (attachment.content_type.includes("text")) {
-                        collectedText.push(obj)
-                    } else {
-                        collectedOther.push(obj)
-                    }
+                    collectedOther.push(obj)
                 }
             }
         }
     }
+
     return [collectedImages, collectedPDF, collectedText, collectedOther]
 }
 
@@ -223,7 +230,7 @@ function NavTabs(): React.ReactNode {
                     setPdfFiles(pdfData)
                     setTextFiles(textData)
                     setOtherFiles(otherData)
-                    setLoading(false) // Set loading to false after data is fetched
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error("Error fetching attachment data:", error)
@@ -251,7 +258,7 @@ function NavTabs(): React.ReactNode {
                         {textFiles && textFiles.length > 0 ? (
                             <FilesTable attachments={textFiles} />
                         ) : (
-                            <p>No attachments found.</p>
+                            <p>No Text Files attachments were found.</p>
                         )}
                     </>
                 )}
@@ -266,7 +273,7 @@ function NavTabs(): React.ReactNode {
                         {imageFiles && imageFiles.length > 0 ? (
                             <ImagesTable attachments={imageFiles} />
                         ) : (
-                            <p>No attachments found.</p>
+                            <p>No Images attachments were found.</p>
                         )}
                     </>
                 )}
@@ -281,7 +288,7 @@ function NavTabs(): React.ReactNode {
                         {imageFiles && imageFiles.length > 0 ? (
                             <ImagesTable attachments={imageFiles} />
                         ) : (
-                            <p>No attachments found.</p>
+                            <p>No Embedded Images attachments were found.</p>
                         )}
                     </>
                 )}
@@ -296,7 +303,7 @@ function NavTabs(): React.ReactNode {
                         {pdfFiles && pdfFiles.length > 0 ? (
                             <FilesTable attachments={pdfFiles} />
                         ) : (
-                            <p>No attachments found.</p>
+                            <p>No PDFs attachments were found.</p>
                         )}
                     </>
                 )}
@@ -311,7 +318,7 @@ function NavTabs(): React.ReactNode {
                         {otherFiles && otherFiles.length > 0 ? (
                             <FilesTable attachments={otherFiles} />
                         ) : (
-                            <p>No attachments found.</p>
+                            <p>No Other attachments were found.</p>
                         )}
                     </>
                 )}
