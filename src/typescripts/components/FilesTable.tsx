@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import {
     Body,
     Cell,
@@ -10,12 +10,13 @@ import {
 } from "@zendeskgarden/react-tables"
 import { collectedAttachmens } from "./NavTabs"
 import OverflowMenu from "./OverflowMenu"
+import LoaderSkeleton from "./loaders/LoaderSkeleton"
 
 interface attachmentsObj {
     attachments: Array<collectedAttachmens>
 }
 
-function formatDate(date: string): string {
+export function formatDate(date: string): string {
     const cdate = new Date(date)
     const options = {
         year: "numeric",
@@ -27,7 +28,7 @@ function formatDate(date: string): string {
     return date
 }
 
-function formatBytes(bytes: number, decimals = 2) {
+export function formatBytes(bytes: number, decimals = 2) {
     if (!+bytes) return "0 Bytes"
 
     const k = 1024
@@ -49,8 +50,17 @@ function formatBytes(bytes: number, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-function FilesTable(attachments: attachmentsObj): React.ReactNode {
-    console.log(attachments)
+function FilesTable({ attachments }: attachmentsObj): React.ReactNode {
+    const [loading, setLoading] = useState<boolean>(true)
+
+    useEffect(() => {
+        setLoading(false)
+    }, [])
+
+    if (loading) {
+        return <LoaderSkeleton items={attachments.length} />
+    }
+
     return (
         <Table size="small">
             <Head>
@@ -66,7 +76,7 @@ function FilesTable(attachments: attachmentsObj): React.ReactNode {
                 </HeaderRow>
             </Head>
             <Body>
-                {attachments.attachments.map(
+                {attachments.map(
                     (attachment: collectedAttachmens, index: number) =>
                         attachment.fileName !== "redacted.txt" ? (
                             <Row key={index}>
@@ -99,6 +109,7 @@ function FilesTable(attachments: attachmentsObj): React.ReactNode {
                                     style={{
                                         width: "10%",
                                         textAlign: "right",
+                                        verticalAlign: "middle",
                                     }}
                                 >
                                     <OverflowMenu
