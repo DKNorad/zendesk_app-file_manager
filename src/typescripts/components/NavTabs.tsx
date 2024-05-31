@@ -3,6 +3,7 @@ import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
 import FilesTable from "./FilesTable"
 import { getZendeskClient } from "./ZenDeskClient"
 import ImagesTable from "./ImagesTable"
+import LoaderSkeleton from "./loaders/LoaderSkeleton"
 
 const zafClient = getZendeskClient()
 
@@ -169,7 +170,6 @@ function getAttachmentData(
     const collectedImages = Array<collectedAttachmens>()
     const collectedPDF = Array<collectedAttachmens>()
     const collectedOther = Array<collectedAttachmens>()
-
     for (const comment of commentData.comments) {
         if (comment.attachments.length > 0) {
             for (const attachment of comment.attachments) {
@@ -211,6 +211,7 @@ function NavTabs(): React.ReactNode {
     const [pdfFiles, setPdfFiles] = useState<collectedAttachmens[]>([])
     const [textFiles, setTextFiles] = useState<collectedAttachmens[]>([])
     const [otherFiles, setOtherFiles] = useState<collectedAttachmens[]>([])
+    const [loading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -222,6 +223,7 @@ function NavTabs(): React.ReactNode {
                     setPdfFiles(pdfData)
                     setTextFiles(textData)
                     setOtherFiles(otherData)
+                    setLoading(false) // Set loading to false after data is fetched
                 }
             } catch (error) {
                 console.error("Error fetching attachment data:", error)
@@ -235,38 +237,83 @@ function NavTabs(): React.ReactNode {
             <TabList>
                 <Tab item="Text Files">Text Files</Tab>
                 <Tab item="Images">Images</Tab>
+                <Tab item="EmbeddedImages">Embedded Images</Tab>
                 <Tab item="PDFs">PDFs</Tab>
                 <Tab item="Other">Other</Tab>
             </TabList>
             <TabPanel item="Text Files">
-                {textFiles && textFiles.length > 0 ? (
-                    <FilesTable attachments={textFiles} />
+                {loading ? (
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <LoaderSkeleton items={textFiles.length} />
+                    </div>
                 ) : (
-                    <p>No attachments found.</p>
+                    <>
+                        {textFiles && textFiles.length > 0 ? (
+                            <FilesTable attachments={textFiles} />
+                        ) : (
+                            <p>No attachments found.</p>
+                        )}
+                    </>
                 )}
             </TabPanel>
             <TabPanel item="Images">
-                {" "}
-                {imageFiles && imageFiles.length > 0 ? (
-                    <ImagesTable attachments={imageFiles} />
+                {loading ? (
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <LoaderSkeleton items={imageFiles.length} />
+                    </div>
                 ) : (
-                    <p>No attachments found.</p>
+                    <>
+                        {imageFiles && imageFiles.length > 0 ? (
+                            <ImagesTable attachments={imageFiles} />
+                        ) : (
+                            <p>No attachments found.</p>
+                        )}
+                    </>
+                )}
+            </TabPanel>
+            <TabPanel item="EmbeddedImages">
+                {loading ? (
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <LoaderSkeleton items={imageFiles.length} />
+                    </div>
+                ) : (
+                    <>
+                        {imageFiles && imageFiles.length > 0 ? (
+                            <ImagesTable attachments={imageFiles} />
+                        ) : (
+                            <p>No attachments found.</p>
+                        )}
+                    </>
                 )}
             </TabPanel>
             <TabPanel item="PDFs">
-                {" "}
-                {pdfFiles && pdfFiles.length > 0 ? (
-                    <FilesTable attachments={pdfFiles} />
+                {loading ? (
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <LoaderSkeleton items={pdfFiles.length} />
+                    </div>
                 ) : (
-                    <p>No attachments found.</p>
+                    <>
+                        {pdfFiles && pdfFiles.length > 0 ? (
+                            <FilesTable attachments={pdfFiles} />
+                        ) : (
+                            <p>No attachments found.</p>
+                        )}
+                    </>
                 )}
             </TabPanel>
             <TabPanel item="Other">
-                {" "}
-                {otherFiles && otherFiles.length > 0 ? (
-                    <FilesTable attachments={otherFiles} />
+                {loading ? (
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <LoaderSkeleton items={otherFiles.length} />
+                    </div>
                 ) : (
-                    <p>No attachments found.</p>
+                    <>
+                        {otherFiles && otherFiles.length > 0 ? (
+                            <FilesTable attachments={otherFiles} />
+                        ) : (
+                            <p>No attachments found.</p>
+                        )}
+                    </>
                 )}
             </TabPanel>
         </Tabs>
