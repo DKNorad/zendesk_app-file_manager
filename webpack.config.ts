@@ -17,7 +17,7 @@ const config: webpack.Configuration = {
             "./src/typescripts/locations/ticket_sidebar.tsx",
             "./src/index.css",
         ],
-        modal: ["./src/typescripts/locations/modal.tsx"],
+        modal: ["./src/typescripts/locations/modal.tsx", "./src/index.css"],
     },
     output: {
         filename: "[name].js",

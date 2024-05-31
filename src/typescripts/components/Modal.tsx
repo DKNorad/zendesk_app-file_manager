@@ -1,7 +1,48 @@
-import React from "react"
+import { ThemeProvider } from "@zendeskgarden/react-theming"
+import React, { CSSProperties } from "react"
 
-const Modal: React.FC = () => {
-    return <div />
+interface ModalContentProps {
+    data?: { url: string; fileName: string }
+    fileType?: string
+}
+
+const Modal: React.FC<ModalContentProps> = ({ data, fileType }) => {
+    const imgContainerStyles: CSSProperties = {
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        overflow: "hidden",
+    }
+
+    const imgStyles: CSSProperties = {
+        maxWidth: "100%",
+        maxHeight: "100%",
+        objectFit: "contain",
+        cursor: "pointer",
+    }
+
+    return (
+        <ThemeProvider>
+            {fileType === "text" && (
+                <>
+                    <h2>{data?.fileName}</h2>
+                    <pre>{data?.url}</pre>
+                </>
+            )}
+            {fileType === "image" && (
+                <div style={imgContainerStyles}>
+                    <a
+                        href={data?.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img src={data?.url} style={imgStyles} alt="Image" />
+                    </a>
+                </div>
+            )}
+        </ThemeProvider>
+    )
 }
 
 export default Modal
