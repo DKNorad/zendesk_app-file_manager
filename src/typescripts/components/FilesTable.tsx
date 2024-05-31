@@ -57,6 +57,10 @@ function FilesTable({ attachments }: attachmentsObj): React.ReactNode {
         setLoading(false)
     }, [])
 
+    if (attachments.length === 0) {
+        return null
+    }
+
     if (loading) {
         return <LoaderSkeleton items={attachments.length} />
     }
@@ -77,48 +81,47 @@ function FilesTable({ attachments }: attachmentsObj): React.ReactNode {
             </Head>
             <Body>
                 {attachments.map(
-                    (attachment: collectedAttachmens, index: number) =>
-                        attachment.fileName !== "redacted.txt" ? (
-                            <Row key={index}>
-                                <Cell
-                                    isTruncated
-                                    style={{
-                                        width: "45%",
-                                    }}
-                                >
-                                    {attachment.fileName}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {formatBytes(attachment.size)}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {formatDate(attachment.timestamp)}
-                                </Cell>
-                                <Cell
-                                    hasOverflow
-                                    style={{
-                                        width: "10%",
-                                        textAlign: "right",
-                                        verticalAlign: "middle",
-                                    }}
-                                >
-                                    <OverflowMenu
-                                        attachment={attachment}
-                                        fileType="text"
-                                    />
-                                </Cell>
-                            </Row>
-                        ) : null,
+                    (attachment: collectedAttachmens, index: number) => (
+                        <Row key={index}>
+                            <Cell
+                                isTruncated
+                                style={{
+                                    width: "45%",
+                                }}
+                            >
+                                {attachment.fileName}
+                            </Cell>
+                            <Cell
+                                style={{
+                                    width: "22.5%",
+                                    textAlign: "right",
+                                }}
+                            >
+                                {formatBytes(attachment.size)}
+                            </Cell>
+                            <Cell
+                                style={{
+                                    width: "22.5%",
+                                    textAlign: "right",
+                                }}
+                            >
+                                {formatDate(attachment.timestamp)}
+                            </Cell>
+                            <Cell
+                                hasOverflow
+                                style={{
+                                    width: "10%",
+                                    textAlign: "right",
+                                    verticalAlign: "middle",
+                                }}
+                            >
+                                <OverflowMenu
+                                    attachment={attachment}
+                                    fileType="text"
+                                />
+                            </Cell>
+                        </Row>
+                    ),
                 )}
             </Body>
         </Table>
