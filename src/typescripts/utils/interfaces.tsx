@@ -130,3 +130,8 @@ export interface ConfirmDeleteModalProps {
     onDelete: () => void
     fileName: string
 }
+
+//FilesTable
+export interface FilesTableattachmentsObj {
+    attachments: Array<collectedAttachmens>
+}
