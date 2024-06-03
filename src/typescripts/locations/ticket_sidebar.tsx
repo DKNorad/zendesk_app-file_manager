@@ -1,10 +1,9 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import App from "../App"
+import { getZendeskClient } from "../components/ZenDeskClient"
 
-declare const ZAFClient: any
-
-const client = ZAFClient.init()
+const client = getZendeskClient()
 const container = document.getElementById("app")
 
 client.on("app.registered", function (appData: any) {
