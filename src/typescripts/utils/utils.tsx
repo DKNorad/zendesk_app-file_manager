@@ -32,6 +32,49 @@ export function formatBytes(bytes: number, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
+export async function convertImgToBase64(
+    url: string,
+    outputFormat: string = "image",
+): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const canvas = document.createElement("CANVAS") as HTMLCanvasElement
+        const ctx = canvas.getContext("2d")
+        const img = new Image()
+        img.crossOrigin = "Anonymous"
+        img.onload = function () {
+            canvas.height = img.height
+            canvas.width = img.width
+            ctx?.drawImage(img, 0, 0)
+            const dataURL = canvas.toDataURL(outputFormat)
+            resolve(dataURL)
+            canvas.remove() // Clean up the canvas element
+        }
+        img.onerror = reject
+        img.src = url
+    })
+}
+
+export async function getUniqueImageUrls(
+    imageUrls: string[],
+): Promise<string[]> {
+    const uniqueBase64s = new Set<string>()
+    const uniqueUrls: string[] = []
+
+    for (const url of imageUrls) {
+        try {
+            const base64Img = await convertImgToBase64(url)
+            if (!uniqueBase64s.has(base64Img)) {
+                uniqueBase64s.add(base64Img)
+                uniqueUrls.push(url)
+            }
+        } catch (error) {
+            console.error(`Failed to convert image ${url} to base64`, error)
+        }
+    }
+
+    return uniqueUrls
+}
+
 // TODO:
 // export async function getMimeTypeFromUrl(url: string): Promise<string> {
 //     try {
