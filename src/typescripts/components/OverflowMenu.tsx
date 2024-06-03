@@ -1,24 +1,33 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { Button } from "@zendeskgarden/react-buttons"
-import { collectedAttachmens } from "./NavTabs"
 import ConfirmDeleteModal from "./ConfirmDeleteModal"
 import DeleteInformationModal from "./DeleteInformationModal"
 import { getZendeskClient } from "./ZenDeskClient"
 import Modal from "./Modal"
 import { renderToString } from "react-dom/server"
+import {
+    CollectedEmbeddedImages,
+    DeletionError,
+    OverflowMenuProps,
+    collectedAttachmens,
+} from "../utils/interfaces"
 
-interface Props {
-    attachment: collectedAttachmens
-    fileType: string
+// Type guard to check if attachment is of type collectedAttachmens
+function isCollectedAttachment(
+    attachment: collectedAttachmens | CollectedEmbeddedImages,
+): attachment is collectedAttachmens {
+    return (
+        (attachment as collectedAttachmens).ticketID !== undefined &&
+        (attachment as collectedAttachmens).messageID !== undefined &&
+        (attachment as collectedAttachmens).attachmentID !== undefined
+    )
 }
 
-export interface DeletionError {
-    error: string
-    description: string
-}
-
-const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
+const OverflowMenu: React.FC<OverflowMenuProps> = ({
+    attachment,
+    fileType,
+}) => {
     // For the delete confirmation modal
     const [isConfirmDeleteModalVisible, setConfirmDeleteModalVisible] =
         useState(false)
@@ -51,11 +60,11 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
 
                 const setHtml = () => {
                     const modalContentString = renderToString(
-                        fileType === "image" ? (
+                        fileType === "image" || fileType === "embeddedImage" ? (
                             <Modal
                                 data={{
                                     url: url,
-                                    fileName: attachment.fileName,
+                                    fileName: attachment.fileName ?? "Unknown",
                                 }}
                                 fileType="image"
                             />
@@ -63,7 +72,7 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
                             <Modal
                                 data={{
                                     url: url,
-                                    fileName: attachment.fileName,
+                                    fileName: attachment.fileName ?? "Unknown",
                                 }}
                                 fileType="text"
                             />
@@ -85,6 +94,8 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
     const openFile = useCallback(async (openType: string) => {
         try {
             if (fileType === "image" && openType === "Modal") {
+                openFileModal(attachment.contentUrl)
+            } else if (fileType === "embeddedImage" && openType === "Modal") {
                 openFileModal(attachment.contentUrl)
             } else {
                 const response = await fetch(attachment.contentUrl)
@@ -109,11 +120,27 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
         }
     }, [])
 
+    const attachmentDetails = useMemo(() => {
+        if (isCollectedAttachment(attachment)) {
+            return {
+                ticketID: attachment.ticketID,
+                messageID: attachment.messageID,
+                attachmentID: attachment.attachmentID,
+            }
+        }
+        return null
+    }, [attachment])
+
     const deleteAttachment = useCallback(async () => {
+        if (!attachmentDetails) {
+            console.error("Cannot delete attachment: invalid type")
+            return
+        }
+
         try {
             const client = getZendeskClient()
             const options = {
-                url: `/api/v2/tickets/${attachment.ticketID}/comments/${attachment.messageID}/attachments/${attachment.attachmentID}/redact`,
+                url: `/api/v2/tickets/${attachmentDetails.ticketID}/comments/${attachmentDetails.messageID}/attachments/${attachmentDetails.attachmentID}/redact`,
                 type: "PUT",
                 contentType: "application/json",
             }
@@ -151,10 +178,10 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
                 console.error("Failed to delete attachment:", error)
             }
         }
-    }, [attachment.attachmentID, attachment.messageID, attachment.ticketID])
+    }, [attachmentDetails])
 
     const handleDeleteClick = useCallback(() => {
-        setSelectedFileName(attachment.fileName)
+        setSelectedFileName(attachment.fileName ?? "Unknown")
         setConfirmDeleteModalVisible(true)
     }, [attachment.fileName])
 
@@ -181,7 +208,7 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
                 <Item value="viewNewTab" onClick={handleViewNewTabClick}>
                     View (New Tab)
                 </Item>
-                {fileType !== "image" && (
+                {fileType !== "image" && fileType !== "embeddedImage" && (
                     <Item
                         value="download"
                         onClick={() =>
@@ -191,9 +218,11 @@ const OverflowMenu: React.FC<Props> = ({ attachment, fileType }) => {
                         Download
                     </Item>
                 )}
-                <Item value="delete" onClick={handleDeleteClick}>
-                    Delete
-                </Item>
+                {fileType !== "embeddedImage" && (
+                    <Item value="delete" onClick={handleDeleteClick}>
+                        Delete
+                    </Item>
+                )}
             </Menu>
             <ConfirmDeleteModal
                 visible={isConfirmDeleteModalVisible}
