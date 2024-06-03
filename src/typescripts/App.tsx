@@ -2,21 +2,13 @@ import React from "react"
 import { ThemeProvider, DEFAULT_THEME } from "@zendeskgarden/react-theming"
 import { Grid, Row, Col } from "@zendeskgarden/react-grid"
 import NavTabs from "./components/NavTabs"
+import { AppProps, AppState } from "./utils/interfaces"
 
-interface Props {
-    client: any
-    appData: any
-}
-
-interface State {
-    attachments: { filename: string; contentUrl: string }[]
-}
-
-class App extends React.Component<Props, State> {
+class App extends React.Component<AppProps, AppState> {
     _client: any
     private _appData: any
 
-    constructor(props: Props) {
+    constructor(props: AppProps) {
         super(props)
         this._client = props.client
         this._appData = props.appData

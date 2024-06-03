@@ -6,3 +6,9 @@ export const getZendeskClient = () => {
     }
     return zendeskClient
 }
+
+export const getSubDomain = async () => {
+    const zafClient = getZendeskClient()
+    const context = await zafClient.context()
+    return String(context.account.subdomain)
+}

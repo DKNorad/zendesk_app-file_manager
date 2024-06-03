@@ -1,10 +1,6 @@
 import { ThemeProvider } from "@zendeskgarden/react-theming"
 import React, { CSSProperties } from "react"
-
-interface ModalContentProps {
-    data?: { url: string; fileName: string }
-    fileType?: string
-}
+import { ModalContentProps } from "../utils/interfaces"
 
 const Modal: React.FC<ModalContentProps> = ({ data, fileType }) => {
     const imgContainerStyles: CSSProperties = {

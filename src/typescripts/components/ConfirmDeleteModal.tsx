@@ -8,13 +8,7 @@ import {
     FooterItem,
     Close,
 } from "@zendeskgarden/react-modals"
-
-interface ConfirmDeleteModalProps {
-    visible: boolean
-    onClose: () => void
-    onDelete: () => void
-    fileName: string
-}
+import { ConfirmDeleteModalProps } from "../utils/interfaces"
 
 const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
     visible,

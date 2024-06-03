@@ -1,10 +1,10 @@
 import React, { useState } from "react"
-import { collectedAttachmens, CollectedEmbeddedImages } from "./NavTabs"
 import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
 import EmbeddedImagesTable from "./imagesTable/EmbeddedImages"
 import AttachedImagesTable from "./imagesTable/AttachedImages"
+import { ImagesTableattachmentsObj } from "../utils/interfaces"
 
-const ImagesTable: React.FC<attachmentsObj> = ({
+const ImagesTable: React.FC<ImagesTableattachmentsObj> = ({
     attachedImages,
     EmbeddedImages,
 }) => {

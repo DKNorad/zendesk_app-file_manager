@@ -8,49 +8,17 @@ import {
     Row,
     Table,
 } from "@zendeskgarden/react-tables"
-import { collectedAttachmens } from "./NavTabs"
 import OverflowMenu from "./OverflowMenu"
 import LoaderSkeleton from "./loaders/LoaderSkeleton"
+import { formatBytes, formatDate } from "../utils/utils"
+import {
+    FilesTableattachmentsObj,
+    collectedAttachmens,
+} from "../utils/interfaces"
 
-interface attachmentsObj {
-    attachments: Array<collectedAttachmens>
-}
-
-export function formatDate(date: string): string {
-    const cdate = new Date(date)
-    const options = {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour12: false,
-    } as const
-    date = cdate.toLocaleDateString("en-us", options)
-    return date
-}
-
-export function formatBytes(bytes: number, decimals = 2) {
-    if (!+bytes) return "0 Bytes"
-
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = [
-        "Bytes",
-        "KiB",
-        "MiB",
-        "GiB",
-        "TiB",
-        "PiB",
-        "EiB",
-        "ZiB",
-        "YiB",
-    ]
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
-
-function FilesTable({ attachments }: attachmentsObj): React.ReactNode {
+function FilesTable({
+    attachments,
+}: FilesTableattachmentsObj): React.ReactNode {
     const [loading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
