@@ -2,13 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Modal</title>
     </head>
-
     <body>
         <div id="modal"></div>
+
         <% _.forEach(htmlWebpackPlugin.options.vendorJs, function(js) { %>
         <script type="text/javascript" src="<%= js %>"></script>
         <% }); %>
+
         <script>
             function parseParams(param_string) {
                 const param_sub = param_string.replace("#", "").split("&")

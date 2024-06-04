@@ -54,41 +54,69 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
                     size: { width: "80vw", height: "70vh" },
                 })
 
-                const modalClient = client.instance(
-                    modalContext["instances.create"][0].instanceGuid,
-                )
+                const modalGuid =
+                    modalContext["instances.create"][0].instanceGuid
+                const modalClient = client.instance(modalGuid)
 
-                const setHtml = () => {
-                    const modalContentString = renderToString(
-                        fileType === "image" || fileType === "embeddedImage" ? (
-                            <Modal
-                                data={{
-                                    url: url,
-                                    fileName: attachment.fileName ?? "Unknown",
-                                }}
-                                fileType="image"
-                            />
-                        ) : (
-                            <Modal
-                                data={{
-                                    url: url,
-                                    fileName: attachment.fileName ?? "Unknown",
-                                }}
-                                fileType="text"
-                            />
-                        ),
-                    )
-                    modalClient.trigger("drawData", modalContentString)
-                    client.off("modalReady", setHtml)
+                const handleModalReady = async () => {
+                    try {
+                        const modalContentString = renderToString(
+                            fileType === "image" ||
+                                fileType === "embeddedImage" ? (
+                                <Modal
+                                    data={{
+                                        url: url,
+                                        fileName:
+                                            attachment.fileName ?? "Unknown",
+                                    }}
+                                    fileType="image"
+                                />
+                            ) : (
+                                <Modal
+                                    data={{
+                                        url: url,
+                                        fileName:
+                                            attachment.fileName ?? "Unknown",
+                                    }}
+                                    fileType="text"
+                                />
+                            ),
+                        )
+
+                        await modalClient.trigger(
+                            "drawData",
+                            modalContentString,
+                        )
+
+                        const modalElement = document.querySelector(
+                            ".modal-content-selector",
+                        )
+                        if (modalElement) {
+                            modalElement.scrollTop = modalElement.scrollHeight
+                        }
+
+                        // Unsubscribe from the event after handling it
+                        client.off("modalReady", handleModalReady)
+                    } catch (error) {
+                        console.error(
+                            "Error during modal content rendering:",
+                            error,
+                        )
+                    }
                 }
 
-                client.on("modalReady", setHtml)
-                modalClient.on("modal.close", () => {})
+                // Attach the handler for modal readiness
+                client.on("modalReady", handleModalReady)
+
+                // Clean up the event listener when modal is closed
+                modalClient.on("modal.close", () => {
+                    client.off("modalReady", handleModalReady)
+                })
             } catch (error) {
                 console.error("Failed to open modal:", error)
             }
         },
-        [fileType],
+        [attachment.fileName, fileType],
     )
 
     const openFile = useCallback(async (openType: string) => {
