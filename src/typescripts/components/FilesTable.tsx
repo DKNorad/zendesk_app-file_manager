@@ -6,6 +6,7 @@ import {
     HeaderCell,
     HeaderRow,
     Row,
+    SortableCell,
     Table,
 } from "@zendeskgarden/react-tables"
 import OverflowMenu from "./OverflowMenu"
@@ -21,12 +22,40 @@ function FilesTable({
 }: FilesTableattachmentsObj): React.ReactNode {
     const [loading, setLoading] = useState<boolean>(true)
 
+    const [sortColumn, setSortColumn] = useState<string>("fileName")
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+
     useEffect(() => {
         setLoading(false)
     }, [])
 
     if (attachments.length === 0) {
         return null
+    }
+
+    // Sort attachments based on the selected column and order
+    const sortedAttachments = [...attachments].sort((a, b) => {
+        const aValue = a[sortColumn]
+        const bValue = b[sortColumn]
+
+        if (aValue === bValue) {
+            return 0
+        }
+
+        if (sortOrder === "asc") {
+            return aValue < bValue ? -1 : 1
+        } else {
+            return aValue > bValue ? -1 : 1
+        }
+    })
+
+    const toggleSortOrder = (column: string) => {
+        if (sortColumn === column) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+        } else {
+            setSortColumn(column)
+            setSortOrder("asc")
+        }
     }
 
     if (loading) {
@@ -37,18 +66,31 @@ function FilesTable({
         <Table size="small">
             <Head>
                 <HeaderRow>
-                    <HeaderCell style={{ width: "45%" }}>File name</HeaderCell>
-                    <HeaderCell style={{ width: "22.5%", textAlign: "center" }}>
+                    <SortableCell
+                        width={"45%"}
+                        onClick={() => toggleSortOrder("fileName")}
+                    >
+                        File name
+                    </SortableCell>
+                    <SortableCell
+                        width={"22.5%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("size")}
+                    >
                         Size
-                    </HeaderCell>
-                    <HeaderCell style={{ width: "22.5%", textAlign: "center" }}>
+                    </SortableCell>
+                    <SortableCell
+                        width={"22.5%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("timestamp")}
+                    >
                         Date
-                    </HeaderCell>
+                    </SortableCell>
                     <HeaderCell style={{ width: "10%" }} />
                 </HeaderRow>
             </Head>
             <Body>
-                {attachments.map(
+                {sortedAttachments.map(
                     (attachment: collectedAttachmens, index: number) => (
                         <Row key={index}>
                             <Cell

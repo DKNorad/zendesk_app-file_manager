@@ -98,12 +98,14 @@ export interface collectedAttachmens {
     ticketID: number
     attachmentID: number
     thumbnails: Array<null | thumbnail>
+    [key: string]: any
 }
 
 export interface CollectedEmbeddedImages {
     contentUrl: string
     fileName: string | null
     timestamp: string
+    [key: string]: any
 }
 
 // Modal

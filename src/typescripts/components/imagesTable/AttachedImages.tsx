@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
     Body,
     Cell,
@@ -6,6 +6,7 @@ import {
     HeaderCell,
     HeaderRow,
     Row,
+    SortableCell,
     Table,
 } from "@zendeskgarden/react-tables"
 import OverflowMenu from "../OverflowMenu"
@@ -18,8 +19,36 @@ import {
 const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     attachments,
 }) => {
+    const [sortColumn, setSortColumn] = useState<string>("imageName")
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+
     if (attachments.length === 0) {
         return null
+    }
+
+    // Sort attachments based on the selected column and order
+    const sortedAttachments = [...attachments].sort((a, b) => {
+        const aValue = a[sortColumn]
+        const bValue = b[sortColumn]
+
+        if (aValue === bValue) {
+            return 0
+        }
+
+        if (sortOrder === "asc") {
+            return aValue < bValue ? -1 : 1
+        } else {
+            return aValue > bValue ? -1 : 1
+        }
+    })
+
+    const toggleSortOrder = (column: string) => {
+        if (sortColumn === column) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+        } else {
+            setSortColumn(column)
+            setSortOrder("asc")
+        }
     }
 
     return (
@@ -27,18 +56,31 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
             <Head>
                 <HeaderRow>
                     <HeaderCell style={{ width: "20%" }} />
-                    <HeaderCell style={{ width: "30%" }}>Image name</HeaderCell>
-                    <HeaderCell style={{ width: "20%", textAlign: "center" }}>
+                    <SortableCell
+                        width={"30%"}
+                        onClick={() => toggleSortOrder("fileName")}
+                    >
+                        Image name
+                    </SortableCell>
+                    <SortableCell
+                        width={"20%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("size")}
+                    >
                         Size
-                    </HeaderCell>
-                    <HeaderCell style={{ width: "20%", textAlign: "center" }}>
+                    </SortableCell>
+                    <SortableCell
+                        width={"20%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("timestamp")}
+                    >
                         Date
-                    </HeaderCell>
-                    <HeaderCell style={{ width: "10%" }} />
+                    </SortableCell>
+                    <HeaderCell width={"10%"} />
                 </HeaderRow>
             </Head>
             <Body>
-                {attachments.map(
+                {sortedAttachments.map(
                     (attachment: collectedAttachmens, index: number) => (
                         <Row key={index}>
                             <Cell style={{ width: "20%" }}>
@@ -56,7 +98,6 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                     />
                                 ) : (
                                     <img
-                                        src="images/missing-thumbnail.png"
                                         alt={attachment.fileName}
                                         style={{
                                             maxWidth: "100%",
