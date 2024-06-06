@@ -192,6 +192,7 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
             // If the request succeeds, update state accordingly
             setConfirmDeleteModalVisible(false)
             setisDeleteInformationModalVisible(true)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             if (
                 error &&

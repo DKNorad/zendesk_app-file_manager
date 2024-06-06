@@ -5,7 +5,9 @@ import NavTabs from "./components/NavTabs"
 import { AppProps, AppState } from "./utils/interfaces"
 
 class App extends React.Component<AppProps, AppState> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _client: any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _appData: any
 
     constructor(props: AppProps) {
@@ -23,6 +25,7 @@ class App extends React.Component<AppProps, AppState> {
         try {
             const data = await this._client.get("ticket.conversation")
             const attachments = data["ticket.conversation"].flatMap(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (attachmentObj: { attachments: any }) =>
                     attachmentObj.attachments || [],
             )
@@ -50,6 +53,7 @@ class App extends React.Component<AppProps, AppState> {
      * Handle error
      * @param {Object} error error object
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _handleError(error: any): void {
         console.log("An error is handled here: ", error.message)
     }

@@ -140,5 +140,6 @@ export async function getUniqueImageUrls(
 
 // Images
 export const missingImage =
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require("@zendeskgarden/svg-icons/src/16/file-image-stroke.svg")
         .default as string
