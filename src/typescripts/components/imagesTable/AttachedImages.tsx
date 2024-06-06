@@ -52,108 +52,111 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     }
 
     return (
-        <Table>
-            <Head>
-                <HeaderRow>
-                    <HeaderCell style={{ width: "20%" }} />
-                    <SortableCell
-                        width={"30%"}
-                        onClick={() => toggleSortOrder("fileName")}
-                    >
-                        Image name
-                    </SortableCell>
-                    <SortableCell
-                        width={"20%"}
-                        style={{ float: "right" }}
-                        onClick={() => toggleSortOrder("size")}
-                    >
-                        Size
-                    </SortableCell>
-                    <SortableCell
-                        width={"20%"}
-                        style={{ float: "right" }}
-                        onClick={() => toggleSortOrder("timestamp")}
-                    >
-                        Date
-                    </SortableCell>
-                    <HeaderCell width={"10%"} />
-                </HeaderRow>
-            </Head>
-            <Body>
-                {sortedAttachments.map(
-                    (attachment: collectedAttachmens, index: number) => (
-                        <Row key={index}>
-                            <Cell style={{ width: "20%" }}>
-                                {attachment.thumbnails &&
-                                attachment.thumbnails[0] ? (
-                                    <img
-                                        src={
-                                            attachment.thumbnails[0].content_url
-                                        }
-                                        alt={attachment.fileName}
-                                        style={{
-                                            maxWidth: "100%",
-                                            height: "auto",
-                                        }}
-                                    />
-                                ) : (
-                                    <center>
+        <div style={{ maxHeight: 490, overflow: "auto" }}>
+            <Table>
+                <Head>
+                    <HeaderRow>
+                        <HeaderCell style={{ width: "20%" }} />
+                        <SortableCell
+                            width={"30%"}
+                            onClick={() => toggleSortOrder("fileName")}
+                        >
+                            Image name
+                        </SortableCell>
+                        <SortableCell
+                            width={"20%"}
+                            style={{ float: "right" }}
+                            onClick={() => toggleSortOrder("size")}
+                        >
+                            Size
+                        </SortableCell>
+                        <SortableCell
+                            width={"20%"}
+                            style={{ float: "right" }}
+                            onClick={() => toggleSortOrder("timestamp")}
+                        >
+                            Date
+                        </SortableCell>
+                        <HeaderCell width={"10%"} />
+                    </HeaderRow>
+                </Head>
+                <Body>
+                    {sortedAttachments.map(
+                        (attachment: collectedAttachmens, index: number) => (
+                            <Row key={index}>
+                                <Cell style={{ width: "20%" }}>
+                                    {attachment.thumbnails &&
+                                    attachment.thumbnails[0] ? (
                                         <img
-                                            src={missingImage}
-                                            alt={"No thumbnail"}
+                                            src={
+                                                attachment.thumbnails[0]
+                                                    .content_url
+                                            }
+                                            alt={attachment.fileName}
                                             style={{
                                                 maxWidth: "100%",
                                                 height: "auto",
                                             }}
                                         />
-                                    </center>
-                                )}
-                            </Cell>
-                            <Cell
-                                isTruncated
-                                style={{
-                                    width: "30%",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                {attachment.fileName}
-                            </Cell>
-                            <Cell
-                                style={{
-                                    width: "20%",
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                {formatBytes(attachment.size)}
-                            </Cell>
-                            <Cell
-                                style={{
-                                    width: "20%",
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                {formatDate(attachment.timestamp)}
-                            </Cell>
-                            <Cell
-                                hasOverflow
-                                style={{
-                                    width: "10%",
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                <OverflowMenu
-                                    attachment={attachment}
-                                    fileType="image"
-                                />
-                            </Cell>
-                        </Row>
-                    ),
-                )}
-            </Body>
-        </Table>
+                                    ) : (
+                                        <center>
+                                            <img
+                                                src={missingImage}
+                                                alt={"No thumbnail"}
+                                                style={{
+                                                    maxWidth: "100%",
+                                                    height: "auto",
+                                                }}
+                                            />
+                                        </center>
+                                    )}
+                                </Cell>
+                                <Cell
+                                    isTruncated
+                                    style={{
+                                        width: "30%",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {attachment.fileName}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "20%",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {formatBytes(attachment.size)}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "20%",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {formatDate(attachment.timestamp)}
+                                </Cell>
+                                <Cell
+                                    hasOverflow
+                                    style={{
+                                        width: "10%",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    <OverflowMenu
+                                        attachment={attachment}
+                                        fileType="image"
+                                    />
+                                </Cell>
+                            </Row>
+                        ),
+                    )}
+                </Body>
+            </Table>
+        </div>
     )
 }
 

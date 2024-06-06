@@ -18,7 +18,7 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     async componentDidMount() {
-        this._client.invoke("resize", { width: "100%", height: "700px" })
+        this._client.invoke("resize", { width: "100%", height: "650px" })
     }
 
     async fetchAttachments() {

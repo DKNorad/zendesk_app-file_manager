@@ -52,78 +52,84 @@ const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
     }
 
     return (
-        <Table>
-            <Head>
-                <HeaderRow>
-                    <HeaderCell style={{ width: "20%" }} />
-                    <SortableCell
-                        width="40%"
-                        onClick={() => toggleSortOrder("fileName")}
-                    >
-                        Image name
-                    </SortableCell>
-                    <SortableCell
-                        width="30%"
-                        style={{ float: "right" }}
-                        onClick={() => toggleSortOrder("timestamp")}
-                    >
-                        Date
-                    </SortableCell>
-                    <HeaderCell style={{ width: "10%" }} />
-                </HeaderRow>
-            </Head>
-            <Body>
-                {sortedAttachments.map(
-                    (attachment: CollectedEmbeddedImages, index: number) => (
-                        <Row key={index}>
-                            <Cell style={{ width: "20%" }}>
-                                <img
-                                    src={attachment.contentUrl}
-                                    alt={
-                                        attachment.fileName || "Embedded image"
-                                    }
+        <div style={{ maxHeight: 490, overflow: "auto" }}>
+            <Table>
+                <Head>
+                    <HeaderRow>
+                        <HeaderCell style={{ width: "20%" }} />
+                        <SortableCell
+                            width="40%"
+                            onClick={() => toggleSortOrder("fileName")}
+                        >
+                            Image name
+                        </SortableCell>
+                        <SortableCell
+                            width="30%"
+                            style={{ float: "right" }}
+                            onClick={() => toggleSortOrder("timestamp")}
+                        >
+                            Date
+                        </SortableCell>
+                        <HeaderCell style={{ width: "10%" }} />
+                    </HeaderRow>
+                </Head>
+                <Body>
+                    {sortedAttachments.map(
+                        (
+                            attachment: CollectedEmbeddedImages,
+                            index: number,
+                        ) => (
+                            <Row key={index}>
+                                <Cell style={{ width: "20%" }}>
+                                    <img
+                                        src={attachment.contentUrl}
+                                        alt={
+                                            attachment.fileName ||
+                                            "Embedded image"
+                                        }
+                                        style={{
+                                            maxWidth: "100%",
+                                            height: "auto",
+                                        }}
+                                    />
+                                </Cell>
+                                <Cell
+                                    isTruncated
                                     style={{
-                                        maxWidth: "100%",
-                                        height: "auto",
+                                        width: "40%",
+                                        verticalAlign: "middle",
                                     }}
-                                />
-                            </Cell>
-                            <Cell
-                                isTruncated
-                                style={{
-                                    width: "40%",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                {attachment.fileName}
-                            </Cell>
-                            <Cell
-                                style={{
-                                    width: "30%",
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                {formatDate(attachment.timestamp)}
-                            </Cell>
-                            <Cell
-                                hasOverflow
-                                style={{
-                                    width: "10%",
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                <OverflowMenu
-                                    attachment={attachment}
-                                    fileType="embeddedImage"
-                                />
-                            </Cell>
-                        </Row>
-                    ),
-                )}
-            </Body>
-        </Table>
+                                >
+                                    {attachment.fileName}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "30%",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {formatDate(attachment.timestamp)}
+                                </Cell>
+                                <Cell
+                                    hasOverflow
+                                    style={{
+                                        width: "10%",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    <OverflowMenu
+                                        attachment={attachment}
+                                        fileType="embeddedImage"
+                                    />
+                                </Cell>
+                            </Row>
+                        ),
+                    )}
+                </Body>
+            </Table>
+        </div>
     )
 }
 

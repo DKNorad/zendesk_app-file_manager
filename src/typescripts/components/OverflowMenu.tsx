@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
-import { Button, IconButton } from "@zendeskgarden/react-buttons"
+import { IconButton } from "@zendeskgarden/react-buttons"
 import ConfirmDeleteModal from "./ConfirmDeleteModal"
 import DeleteInformationModal from "./DeleteInformationModal"
 import { getZendeskClient } from "./ZenDeskClient"
@@ -226,7 +226,6 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
     return (
         <>
             <Menu
-                hasArrow
                 button={(props) => (
                     <IconButton
                         {...props}
