@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 export function formatDate(date: string): string {
     const cdate = new Date(date)
     const options = {
@@ -140,6 +141,9 @@ export async function getUniqueImageUrls(
 
 // Images
 export const missingImage =
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require("@zendeskgarden/svg-icons/src/16/file-image-stroke.svg")
+        .default as string
+
+export const OverFlowImage =
+    require("@zendeskgarden/svg-icons/src/16/align-justify-stroke.svg")
         .default as string

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
-import { Button } from "@zendeskgarden/react-buttons"
+import { Button, IconButton } from "@zendeskgarden/react-buttons"
 import ConfirmDeleteModal from "./ConfirmDeleteModal"
 import DeleteInformationModal from "./DeleteInformationModal"
 import { getZendeskClient } from "./ZenDeskClient"
@@ -12,6 +12,8 @@ import {
     OverflowMenuProps,
     collectedAttachmens,
 } from "../utils/interfaces"
+import { OverFlowImage } from "../utils/utils"
+import { OverflowIcon } from "@zendeskgarden/svg-icons/src/16/align-justify-stroke.svg"
 
 // Type guard to check if attachment is of type collectedAttachmens
 function isCollectedAttachment(
@@ -225,10 +227,17 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
     return (
         <>
             <Menu
+                hasArrow
                 button={(props) => (
-                    <Button {...props} size="small" isNeutral focusInset>
-                        ::
-                    </Button>
+                    <IconButton
+                        {...props}
+                        size="small"
+                        aria-label="Actions"
+                        isNeutral
+                        focusInset
+                    >
+                        <img src={OverFlowImage} />
+                    </IconButton>
                 )}
             >
                 <Item value="view" onClick={() => openFile("Modal")}>
