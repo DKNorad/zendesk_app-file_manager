@@ -137,3 +137,8 @@ export async function getUniqueImageUrls(
 //         return "unknown"
 //     }
 // }
+
+// Images
+export const missingImage =
+    require("@zendeskgarden/svg-icons/src/16/file-image-stroke.svg")
+        .default as string

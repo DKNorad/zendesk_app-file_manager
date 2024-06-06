@@ -10,7 +10,7 @@ import {
     Table,
 } from "@zendeskgarden/react-tables"
 import OverflowMenu from "../OverflowMenu"
-import { formatBytes, formatDate } from "../../utils/utils"
+import { formatBytes, formatDate, missingImage } from "../../utils/utils"
 import {
     AttachedImagesattachmentsObj,
     collectedAttachmens,
@@ -97,13 +97,16 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                         }}
                                     />
                                 ) : (
-                                    <img
-                                        alt={attachment.fileName}
-                                        style={{
-                                            maxWidth: "100%",
-                                            height: "auto",
-                                        }}
-                                    />
+                                    <center>
+                                        <img
+                                            src={missingImage}
+                                            alt={"No thumbnail"}
+                                            style={{
+                                                maxWidth: "100%",
+                                                height: "auto",
+                                            }}
+                                        />
+                                    </center>
                                 )}
                             </Cell>
                             <Cell
