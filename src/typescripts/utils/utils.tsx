@@ -144,6 +144,6 @@ export const missingImage =
     require("@zendeskgarden/svg-icons/src/16/file-image-stroke.svg")
         .default as string
 
-export const OverFlowImage =
+export const overFlowImage =
     require("@zendeskgarden/svg-icons/src/16/align-justify-stroke.svg")
         .default as string

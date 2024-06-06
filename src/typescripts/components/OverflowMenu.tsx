@@ -12,8 +12,7 @@ import {
     OverflowMenuProps,
     collectedAttachmens,
 } from "../utils/interfaces"
-import { OverFlowImage } from "../utils/utils"
-import { OverflowIcon } from "@zendeskgarden/svg-icons/src/16/align-justify-stroke.svg"
+import { overFlowImage } from "../utils/utils"
 
 // Type guard to check if attachment is of type collectedAttachmens
 function isCollectedAttachment(
@@ -236,7 +235,7 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
                         isNeutral
                         focusInset
                     >
-                        <img src={OverFlowImage} />
+                        <img src={overFlowImage} />
                     </IconButton>
                 )}
             >
