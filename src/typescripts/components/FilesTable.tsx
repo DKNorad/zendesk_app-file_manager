@@ -23,25 +23,62 @@ import {
     FilesTableattachmentsObj,
     collectedAttachmens,
 } from "../utils/interfaces"
+import { FaSearch } from "react-icons/fa"
 
 function FilesTable({
     attachments,
 }: FilesTableattachmentsObj): React.ReactNode {
     const [loading, setLoading] = useState<boolean>(true)
-
+    const [searchInput, setSearchInput] = useState<string>("")
+    const [filteredAttachments, setFilteredAttachments] = useState<
+        collectedAttachmens[]
+    >([])
     const [sortColumn, setSortColumn] = useState<string>("fileName")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+
+    const [searchExpanded, setSearchExpanded] = useState<boolean>(false)
 
     useEffect(() => {
         setLoading(false)
     }, [])
 
-    if (attachments.length === 0) {
-        return null
+    useEffect(() => {
+        const delaySearch = setTimeout(() => {
+            const filtered = attachments.filter((attachment) =>
+                attachment.fileName
+                    .toLowerCase()
+                    .includes(searchInput.toLowerCase()),
+            )
+            setFilteredAttachments(filtered)
+        }, 300)
+
+        return () => clearTimeout(delaySearch)
+    }, [attachments, searchInput])
+
+    const handleSearchInputChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        setSearchInput(event.target.value)
+    }
+
+    const toggleSearch = () => {
+        setSearchExpanded(!searchExpanded)
+    }
+
+    const handleSearchInputBlur = () => {
+        setSearchExpanded(false)
+    }
+
+    const handleSearchInputKeyDown = (
+        event: React.KeyboardEvent<HTMLInputElement>,
+    ) => {
+        if (event.key === "Escape") {
+            setSearchExpanded(false)
+        }
     }
 
     // Sort attachments based on the selected column and order
-    const sortedAttachments = [...attachments].sort((a, b) => {
+    const sortedAttachments = [...filteredAttachments].sort((a, b) => {
         const aValue = a[sortColumn]
         const bValue = b[sortColumn]
 
@@ -83,86 +120,132 @@ function FilesTable({
     }
 
     return (
-        <Table size="small">
-            <Head>
-                <HeaderRow>
-                    <SortableCell
-                        width={"45%"}
-                        onClick={() => toggleSortOrder("fileName")}
-                    >
-                        File name
-                    </SortableCell>
-                    <SortableCell
-                        width={"22.5%"}
-                        style={{ float: "right" }}
-                        onClick={() => toggleSortOrder("size")}
-                    >
-                        Size
-                    </SortableCell>
-                    <SortableCell
-                        width={"22.5%"}
-                        style={{ float: "right" }}
-                        onClick={() => toggleSortOrder("timestamp")}
-                    >
-                        Date
-                    </SortableCell>
-                    <HeaderCell style={{ width: "10%" }} />
-                </HeaderRow>
-            </Head>
-            <Body>
-                {sortedAttachments.map(
-                    (attachment: collectedAttachmens, index) => (
-                        <Row key={index}>
-                            <Cell
-                                isTruncated
-                                style={{
-                                    width: "45%",
-                                }}
-                            >
-                                <img
-                                    src={
-                                        contentTypeImages[
-                                            attachment.contentType
-                                        ] || genericIcon
-                                    }
-                                    style={{ paddingRight: "5px" }}
-                                />
-                                {attachment.fileName}
-                            </Cell>
-                            <Cell
-                                style={{
-                                    width: "22.5%",
-                                    textAlign: "right",
-                                }}
-                            >
-                                {formatBytes(attachment.size)}
-                            </Cell>
-                            <Cell
-                                style={{
-                                    width: "22.5%",
-                                    textAlign: "right",
-                                }}
-                            >
-                                {formatDate(attachment.timestamp)}
-                            </Cell>
-                            <Cell
-                                hasOverflow
-                                style={{
-                                    width: "10%",
-                                    textAlign: "right",
-                                    verticalAlign: "middle",
-                                }}
-                            >
-                                <OverflowMenu
-                                    attachment={attachment}
-                                    fileType="text"
-                                />
-                            </Cell>
-                        </Row>
-                    ),
+        <div className="files-table-container">
+            <div
+                className="search-container"
+                style={{ display: "flex", alignItems: "center" }}
+            >
+                <div
+                    className={`search-icon ${
+                        searchExpanded ? "expanded" : ""
+                    }`}
+                    onClick={toggleSearch}
+                    style={{
+                        padding: "8px",
+                        transition: "all 0.3s ease-in-out",
+                        cursor: "pointer",
+                    }}
+                >
+                    <FaSearch
+                        style={{
+                            fontSize: "18px",
+                            color: searchExpanded ? "#333" : "#888",
+                        }}
+                    />
+                </div>
+                {searchExpanded && (
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search..."
+                        value={searchInput}
+                        onChange={handleSearchInputChange}
+                        onBlur={handleSearchInputBlur}
+                        onKeyDown={handleSearchInputKeyDown}
+                        style={{
+                            borderRadius: "20px",
+                            padding: "8px 12px",
+                            width: "200px",
+                            overflow: "hidden",
+                            border: "1px solid #ccc",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            transition: "all 0.3s ease-in-out",
+                            marginLeft: "8px",
+                        }}
+                    />
                 )}
-            </Body>
-        </Table>
+            </div>
+            <Table size="small">
+                <Head>
+                    <HeaderRow>
+                        <SortableCell
+                            width={"45%"}
+                            onClick={() => toggleSortOrder("fileName")}
+                        >
+                            File name
+                        </SortableCell>
+                        <SortableCell
+                            width={"22.5%"}
+                            style={{ float: "right" }}
+                            onClick={() => toggleSortOrder("size")}
+                        >
+                            Size
+                        </SortableCell>
+                        <SortableCell
+                            width={"22.5%"}
+                            style={{ float: "right" }}
+                            onClick={() => toggleSortOrder("timestamp")}
+                        >
+                            Date
+                        </SortableCell>
+                        <HeaderCell style={{ width: "10%" }} />
+                    </HeaderRow>
+                </Head>
+                <Body>
+                    {sortedAttachments.map(
+                        (attachment: collectedAttachmens, index) => (
+                            <Row key={index}>
+                                <Cell
+                                    isTruncated
+                                    style={{
+                                        width: "45%",
+                                    }}
+                                >
+                                    <img
+                                        src={
+                                            contentTypeImages[
+                                                attachment.contentType
+                                            ] || genericIcon
+                                        }
+                                        style={{ paddingRight: "5px" }}
+                                    />
+                                    {attachment.fileName}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "22.5%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {formatBytes(attachment.size)}
+                                </Cell>
+                                <Cell
+                                    style={{
+                                        width: "22.5%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {formatDate(attachment.timestamp)}
+                                </Cell>
+                                <Cell
+                                    hasOverflow
+                                    style={{
+                                        width: "10%",
+                                        textAlign: "right",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    <OverflowMenu
+                                        attachment={attachment}
+                                        fileType="text"
+                                    />
+                                </Cell>
+                            </Row>
+                        ),
+                    )}
+                </Body>
+            </Table>
+        </div>
     )
 }
 
