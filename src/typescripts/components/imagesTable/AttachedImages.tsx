@@ -52,37 +52,38 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     }
 
     return (
-        <div style={{ maxHeight: 490, overflow: "auto" }}>
-            <Table>
-                <Head>
-                    <HeaderRow>
-                        <HeaderCell style={{ width: "20%" }} />
-                        <SortableCell
-                            width={"30%"}
-                            onClick={() => toggleSortOrder("fileName")}
-                        >
-                            Image name
-                        </SortableCell>
-                        <SortableCell
-                            width={"20%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("size")}
-                        >
-                            Size
-                        </SortableCell>
-                        <SortableCell
-                            width={"20%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("timestamp")}
-                        >
-                            Date
-                        </SortableCell>
-                        <HeaderCell width={"10%"} />
-                    </HeaderRow>
-                </Head>
-                <Body>
-                    {sortedAttachments.map(
-                        (attachment: collectedAttachmens, index: number) => (
+        <Table>
+            <Head>
+                <HeaderRow>
+                    <HeaderCell style={{ width: "20%" }} />
+                    <SortableCell
+                        width={"30%"}
+                        onClick={() => toggleSortOrder("fileName")}
+                    >
+                        Image name
+                    </SortableCell>
+                    <SortableCell
+                        width={"20%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("size")}
+                    >
+                        Size
+                    </SortableCell>
+                    <SortableCell
+                        width={"20%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("timestamp")}
+                    >
+                        Date
+                    </SortableCell>
+                    <HeaderCell width={"10%"} />
+                </HeaderRow>
+            </Head>
+            <Body>
+                {sortedAttachments.map(
+                    (attachment: collectedAttachmens, index: number) => (
+                        console.log(attachment),
+                        (
                             <Row key={index}>
                                 <Cell style={{ width: "20%" }}>
                                     {attachment.thumbnails &&
@@ -99,16 +100,14 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                             }}
                                         />
                                     ) : (
-                                        <center>
-                                            <img
-                                                src={missingImage}
-                                                alt={"No thumbnail"}
-                                                style={{
-                                                    maxWidth: "100%",
-                                                    height: "auto",
-                                                }}
-                                            />
-                                        </center>
+                                        <img
+                                            src={missingImage}
+                                            alt={"No thumbnail"}
+                                            style={{
+                                                maxWidth: "100%",
+                                                height: "auto",
+                                            }}
+                                        />
                                     )}
                                 </Cell>
                                 <Cell
@@ -152,11 +151,11 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                     />
                                 </Cell>
                             </Row>
-                        ),
-                    )}
-                </Body>
-            </Table>
-        </div>
+                        )
+                    ),
+                )}
+            </Body>
+        </Table>
     )
 }
 

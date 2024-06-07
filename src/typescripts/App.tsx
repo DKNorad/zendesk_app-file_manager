@@ -18,7 +18,7 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     async componentDidMount() {
-        this._client.invoke("resize", { width: "100%", height: "650px" })
+        this._client.invoke("resize", { width: "100%", height: "668px" })
     }
 
     async fetchAttachments() {
@@ -38,13 +38,7 @@ class App extends React.Component<AppProps, AppState> {
     render() {
         return (
             <ThemeProvider theme={{ ...DEFAULT_THEME }}>
-                <Grid>
-                    <Row>
-                        <Col>
-                            <NavTabs />
-                        </Col>
-                    </Row>
-                </Grid>
+                <NavTabs />
             </ThemeProvider>
         )
     }

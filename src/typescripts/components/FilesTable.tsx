@@ -63,80 +63,78 @@ function FilesTable({
     }
 
     return (
-        <div style={{ maxHeight: 550, overflow: "auto" }}>
-            <Table size="small">
-                <Head>
-                    <HeaderRow>
-                        <SortableCell
-                            width={"45%"}
-                            onClick={() => toggleSortOrder("fileName")}
-                        >
-                            File name
-                        </SortableCell>
-                        <SortableCell
-                            width={"22.5%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("size")}
-                        >
-                            Size
-                        </SortableCell>
-                        <SortableCell
-                            width={"22.5%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("timestamp")}
-                        >
-                            Date
-                        </SortableCell>
-                        <HeaderCell style={{ width: "10%" }} />
-                    </HeaderRow>
-                </Head>
-                <Body>
-                    {sortedAttachments.map(
-                        (attachment: collectedAttachmens, index: number) => (
-                            <Row key={index}>
-                                <Cell
-                                    isTruncated
-                                    style={{
-                                        width: "45%",
-                                    }}
-                                >
-                                    {attachment.fileName}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {formatBytes(attachment.size)}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {formatDate(attachment.timestamp)}
-                                </Cell>
-                                <Cell
-                                    hasOverflow
-                                    style={{
-                                        width: "10%",
-                                        textAlign: "right",
-                                        verticalAlign: "middle",
-                                    }}
-                                >
-                                    <OverflowMenu
-                                        attachment={attachment}
-                                        fileType="text"
-                                    />
-                                </Cell>
-                            </Row>
-                        ),
-                    )}
-                </Body>
-            </Table>
-        </div>
+        <Table size="small">
+            <Head>
+                <HeaderRow>
+                    <SortableCell
+                        width={"45%"}
+                        onClick={() => toggleSortOrder("fileName")}
+                    >
+                        File name
+                    </SortableCell>
+                    <SortableCell
+                        width={"22.5%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("size")}
+                    >
+                        Size
+                    </SortableCell>
+                    <SortableCell
+                        width={"22.5%"}
+                        style={{ float: "right" }}
+                        onClick={() => toggleSortOrder("timestamp")}
+                    >
+                        Date
+                    </SortableCell>
+                    <HeaderCell style={{ width: "10%" }} />
+                </HeaderRow>
+            </Head>
+            <Body>
+                {sortedAttachments.map(
+                    (attachment: collectedAttachmens, index: number) => (
+                        <Row key={index}>
+                            <Cell
+                                isTruncated
+                                style={{
+                                    width: "45%",
+                                }}
+                            >
+                                {attachment.fileName}
+                            </Cell>
+                            <Cell
+                                style={{
+                                    width: "22.5%",
+                                    textAlign: "right",
+                                }}
+                            >
+                                {formatBytes(attachment.size)}
+                            </Cell>
+                            <Cell
+                                style={{
+                                    width: "22.5%",
+                                    textAlign: "right",
+                                }}
+                            >
+                                {formatDate(attachment.timestamp)}
+                            </Cell>
+                            <Cell
+                                hasOverflow
+                                style={{
+                                    width: "10%",
+                                    textAlign: "right",
+                                    verticalAlign: "middle",
+                                }}
+                            >
+                                <OverflowMenu
+                                    attachment={attachment}
+                                    fileType="text"
+                                />
+                            </Cell>
+                        </Row>
+                    ),
+                )}
+            </Body>
+        </Table>
     )
 }
 

@@ -14,8 +14,8 @@ const ImagesTable: React.FC<ImagesTableattachmentsObj> = ({
     const [selectedTab, setSelectedTab] = useState("Attached Images")
 
     const [hideAttachmentsDuplicates, setHideAttachmentsDuplicates] =
-        useState(true)
-    const [hideEmbeddedDuplicates, setHideEmbeddedDuplicates] = useState(true)
+        useState(false)
+    const [hideEmbeddedDuplicates, setHideEmbeddedDuplicates] = useState(false)
 
     const [uniqueAttachedImages, setUniqueAttachedImages] =
         useState(attachedImages)
@@ -62,21 +62,27 @@ const ImagesTable: React.FC<ImagesTableattachmentsObj> = ({
         : EmbeddedImages
 
     return (
-        <>
-            <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
-                <TabList>
-                    <Tab item={"Attached Images"}>
-                        Attached Images ({filteredAttachedImages.length})
-                    </Tab>
-                    <Tab item={"Embedded Images"}>
-                        Embedded Images ({filteredEmbeddedImages.length})
-                    </Tab>
-                </TabList>
+        <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
+            <TabList>
+                <Tab
+                    item={"Attached Images"}
+                    disabled={filteredAttachedImages.length === 0}
+                >
+                    Attached ({filteredAttachedImages.length})
+                </Tab>
+                <Tab
+                    item={"Embedded Images"}
+                    disabled={filteredEmbeddedImages.length === 0}
+                >
+                    Embedded ({filteredEmbeddedImages.length})
+                </Tab>
+            </TabList>
+
+            {filteredAttachedImages.length > 0 && (
                 <TabPanel item={"Attached Images"}>
                     {loadingAttachedImages ? (
                         <LoaderSkeleton items={attachedImages.length} />
-                    ) : filteredAttachedImages &&
-                      filteredAttachedImages.length > 0 ? (
+                    ) : (
                         <>
                             <Field>
                                 <Toggle
@@ -87,24 +93,22 @@ const ImagesTable: React.FC<ImagesTableattachmentsObj> = ({
                                         )
                                     }
                                 >
-                                    <Label>
-                                        Hide duplicate attached images
-                                    </Label>
+                                    <Label>Hide duplicates</Label>
                                 </Toggle>
                             </Field>
                             <AttachedImagesTable
                                 attachments={filteredAttachedImages}
                             />
                         </>
-                    ) : (
-                        <p>No attached images found.</p>
                     )}
                 </TabPanel>
+            )}
+
+            {filteredEmbeddedImages.length > 0 && (
                 <TabPanel item={"Embedded Images"}>
                     {loadingEmbeddedImages ? (
                         <LoaderSkeleton items={EmbeddedImages.length} />
-                    ) : filteredEmbeddedImages &&
-                      filteredEmbeddedImages.length > 0 ? (
+                    ) : (
                         <>
                             <Field>
                                 <Toggle
@@ -115,21 +119,17 @@ const ImagesTable: React.FC<ImagesTableattachmentsObj> = ({
                                         )
                                     }
                                 >
-                                    <Label>
-                                        Hide duplicate embedded images
-                                    </Label>
+                                    <Label>Hide duplicates</Label>
                                 </Toggle>
                             </Field>
                             <EmbeddedImagesTable
                                 attachments={filteredEmbeddedImages}
                             />
                         </>
-                    ) : (
-                        <p>No embedded images found.</p>
                     )}
                 </TabPanel>
-            </Tabs>
-        </>
+            )}
+        </Tabs>
     )
 }
 

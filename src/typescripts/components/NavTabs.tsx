@@ -201,48 +201,45 @@ function NavTabs(): React.ReactNode {
     return (
         <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
             <TabList>
-                <Tab item="Text Files">Text Files ({textFiles.length})</Tab>
+                <Tab item="Text Files" disabled={textFiles.length === 0}>
+                    Text Files ({textFiles.length})
+                </Tab>
                 <Tab item="Images">
                     Images ({imageFiles.length + embeddedImageFiles.length})
                 </Tab>
                 <Tab item="PDFs">PDFs ({pdfFiles.length})</Tab>
                 <Tab item="Other">Other ({otherFiles.length})</Tab>
             </TabList>
-            <TabPanel item="Text Files">
-                {loading ? (
-                    <div style={{ textAlign: "center", marginTop: "20px" }}>
-                        <LoaderSkeleton items={textFiles.length} />
-                    </div>
-                ) : (
-                    <>
-                        {textFiles && textFiles.length > 0 ? (
-                            <FilesTable attachments={textFiles} />
-                        ) : (
-                            <p>No text files found.</p>
-                        )}
-                    </>
-                )}
-            </TabPanel>
-            <TabPanel item="Images">
-                {loading ? (
-                    <div style={{ textAlign: "center", marginTop: "20px" }}>
-                        <LoaderSkeleton items={imageFiles.length} />
-                    </div>
-                ) : (
-                    <>
-                        {(imageFiles && imageFiles.length > 0) ||
-                        (embeddedImageFiles &&
-                            embeddedImageFiles.length > 0) ? (
-                            <ImagesTable
-                                attachedImages={imageFiles}
-                                EmbeddedImages={embeddedImageFiles}
-                            />
-                        ) : (
-                            <p>No images found.</p>
-                        )}
-                    </>
-                )}
-            </TabPanel>
+            {textFiles.length > 0 && (
+                <TabPanel item="Text Files">
+                    {loading ? (
+                        <div style={{ textAlign: "center", marginTop: "20px" }}>
+                            <LoaderSkeleton items={textFiles.length} />
+                        </div>
+                    ) : (
+                        <FilesTable attachments={textFiles} />
+                    )}
+                </TabPanel>
+            )}
+            {(imageFiles.length > 0 || embeddedImageFiles.length > 0) && (
+                <TabPanel item="Images">
+                    {loading ? (
+                        <div
+                            style={{
+                                textAlign: "center",
+                                marginTop: "20px",
+                            }}
+                        >
+                            <LoaderSkeleton items={imageFiles.length} />
+                        </div>
+                    ) : (
+                        <ImagesTable
+                            attachedImages={imageFiles}
+                            EmbeddedImages={embeddedImageFiles}
+                        />
+                    )}
+                </TabPanel>
+            )}
             <TabPanel item="PDFs">
                 {loading ? (
                     <div style={{ textAlign: "center", marginTop: "20px" }}>
