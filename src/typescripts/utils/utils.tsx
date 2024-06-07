@@ -147,3 +147,19 @@ export const missingImage =
 export const overFlowImage =
     require("@zendeskgarden/svg-icons/src/16/align-justify-stroke.svg")
         .default as string
+
+export const documentIcon =
+    require("@zendeskgarden/svg-icons/src/16/file-document-stroke.svg")
+        .default as string
+
+export const pdfIcon =
+    require("@zendeskgarden/svg-icons/src/16/file-pdf-stroke.svg")
+        .default as string
+
+export const genericIcon =
+    require("@zendeskgarden/svg-icons/src/16/file-generic-stroke.svg")
+        .default as string
+
+export const zipIcon =
+    require("@zendeskgarden/svg-icons/src/16/file-zip-stroke.svg")
+        .default as string

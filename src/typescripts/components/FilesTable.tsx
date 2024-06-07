@@ -11,7 +11,14 @@ import {
 } from "@zendeskgarden/react-tables"
 import OverflowMenu from "./OverflowMenu"
 import LoaderSkeleton from "./loaders/LoaderSkeleton"
-import { formatBytes, formatDate } from "../utils/utils"
+import {
+    documentIcon,
+    formatBytes,
+    formatDate,
+    genericIcon,
+    pdfIcon,
+    zipIcon,
+} from "../utils/utils"
 import {
     FilesTableattachmentsObj,
     collectedAttachmens,
@@ -62,6 +69,19 @@ function FilesTable({
         return <LoaderSkeleton items={attachments.length} />
     }
 
+    const contentTypeImages: { [key: string]: string } = {
+        "text/plain": documentIcon,
+        "text/x-log": documentIcon,
+        "text/csv": documentIcon,
+        "application/pdf": pdfIcon,
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            documentIcon,
+        "application/vnd.visio": genericIcon,
+        "application/unknown": genericIcon,
+        "application/xml-dtd": documentIcon,
+        "application/zip": zipIcon,
+    }
+
     return (
         <Table size="small">
             <Head>
@@ -99,6 +119,14 @@ function FilesTable({
                                     width: "45%",
                                 }}
                             >
+                                <img
+                                    src={
+                                        contentTypeImages[
+                                            attachment.contentType
+                                        ] || genericIcon
+                                    }
+                                    style={{ paddingRight: "5px" }}
+                                />
                                 {attachment.fileName}
                             </Cell>
                             <Cell
