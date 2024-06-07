@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { IconButton } from "@zendeskgarden/react-buttons"
 import ConfirmDeleteModal from "./ConfirmDeleteModal"
@@ -29,7 +29,6 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
     attachment,
     fileType,
 }) => {
-    // For the delete confirmation modal
     const [isConfirmDeleteModalVisible, setConfirmDeleteModalVisible] =
         useState(false)
     const [
@@ -41,90 +40,80 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
         DeletionError | undefined
     >()
 
-    // For the file view modal
-    const openFileModal = useCallback(
-        async (url: string) => {
-            try {
-                const client = getZendeskClient()
-                const context = await client.context()
-                const parent_guid = context.instanceGuid
-
-                const modalContext = await client.invoke("instances.create", {
-                    location: "modal",
-                    url: `assets/modal.html#parent_guid=${parent_guid}`,
-                    size: { width: "80vw", height: "70vh" },
-                })
-
-                const modalGuid =
-                    modalContext["instances.create"][0].instanceGuid
-                const modalClient = client.instance(modalGuid)
-
-                const handleModalReady = async () => {
-                    try {
-                        const modalContentString = renderToString(
-                            fileType === "image" ||
-                                fileType === "embeddedImage" ? (
-                                <Modal
-                                    data={{
-                                        url: url,
-                                        fileName:
-                                            attachment.fileName ?? "Unknown",
-                                    }}
-                                    fileType="image"
-                                />
-                            ) : (
-                                <Modal
-                                    data={{
-                                        url: url,
-                                        fileName:
-                                            attachment.fileName ?? "Unknown",
-                                    }}
-                                    fileType="text"
-                                />
-                            ),
-                        )
-
-                        await modalClient.trigger(
-                            "drawData",
-                            modalContentString,
-                        )
-
-                        const modalElement = document.querySelector(
-                            ".modal-content-selector",
-                        )
-                        if (modalElement) {
-                            modalElement.scrollTop = modalElement.scrollHeight
-                        }
-
-                        // Unsubscribe from the event after handling it
-                        client.off("modalReady", handleModalReady)
-                    } catch (error) {
-                        console.error(
-                            "Error during modal content rendering:",
-                            error,
-                        )
-                    }
-                }
-
-                // Attach the handler for modal readiness
-                client.on("modalReady", handleModalReady)
-
-                // Clean up the event listener when modal is closed
-                modalClient.on("modal.close", () => {
-                    client.off("modalReady", handleModalReady)
-                })
-            } catch (error) {
-                console.error("Failed to open modal:", error)
-            }
-        },
-        [attachment.fileName, fileType],
-    )
-
-    const openFile = useCallback(async (openType: string) => {
+    const openFileModal = async (url: string) => {
         try {
-            if (fileType === "image" && openType === "Modal") {
-                openFileModal(attachment.contentUrl)
-            } else if (fileType === "embeddedImage" && openType === "Modal") {
+            const client = getZendeskClient()
+            const context = await client.context()
+            const parent_guid = context.instanceGuid
+
+            const modalContext = await client.invoke("instances.create", {
+                location: "modal",
+                url: `assets/modal.html#parent_guid=${parent_guid}`,
+                size: { width: "80vw", height: "70vh" },
+            })
+
+            const modalGuid = modalContext["instances.create"][0].instanceGuid
+            const modalClient = client.instance(modalGuid)
+
+            const handleModalReady = async () => {
+                try {
+                    const modalContentString = renderToString(
+                        fileType === "image" || fileType === "embeddedImage" ? (
+                            <Modal
+                                data={{
+                                    url: url,
+                                    fileName: attachment.fileName ?? "Unknown",
+                                }}
+                                fileType="image"
+                            />
+                        ) : (
+                            <Modal
+                                data={{
+                                    url: url,
+                                    fileName: attachment.fileName ?? "Unknown",
+                                }}
+                                fileType="text"
+                            />
+                        ),
+                    )
+
+                    await modalClient.trigger("drawData", modalContentString)
+
+                    const modalElement = document.querySelector(
+                        ".modal-content-selector",
+                    )
+                    if (modalElement) {
+                        modalElement.scrollTop = modalElement.scrollHeight
+                    }
+
+                    // Unsubscribe from the event after handling it
+                    client.off("modalReady", handleModalReady)
+                } catch (error) {
+                    console.error(
+                        "Error during modal content rendering:",
+                        error,
+                    )
+                }
+            }
+
+            // Attach the handler for modal readiness
+            client.on("modalReady", handleModalReady)
+
+            // Clean up the event listener when modal is closed
+            modalClient.on("modal.close", () => {
+                client.off("modalReady", handleModalReady)
+            })
+        } catch (error) {
+            console.error("Failed to open modal:", error)
+        }
+    }
+
+    const openFile = async (openType: string) => {
+        try {
+            if (
+                (fileType === "image" || fileType === "embeddedImage") &&
+                openType === "Modal"
+            ) {
                 openFileModal(attachment.contentUrl)
             } else {
                 const response = await fetch(attachment.contentUrl)
@@ -147,7 +136,7 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
         } catch (error) {
             console.error("Failed to open the file:", error)
         }
-    }, [])
+    }
 
     const attachmentDetails = useMemo(() => {
         if (isCollectedAttachment(attachment)) {
@@ -160,7 +149,7 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
         return null
     }, [attachment])
 
-    const deleteAttachment = useCallback(async () => {
+    const deleteAttachment = async () => {
         if (!attachmentDetails) {
             console.error("Cannot delete attachment: invalid type")
             return
@@ -193,7 +182,6 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
             // If the request succeeds, update state accordingly
             setConfirmDeleteModalVisible(false)
             setisDeleteInformationModalVisible(true)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             if (
                 error &&
@@ -208,12 +196,12 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
                 console.error("Failed to delete attachment:", error)
             }
         }
-    }, [attachmentDetails])
+    }
 
-    const handleDeleteClick = useCallback(() => {
+    const handleDeleteClick = () => {
         setSelectedFileName(attachment.fileName ?? "Unknown")
         setConfirmDeleteModalVisible(true)
-    }, [attachment.fileName])
+    }
 
     const handleViewNewTabClick = () => {
         if (fileType === "image") {

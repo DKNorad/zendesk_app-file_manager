@@ -91,7 +91,7 @@ function FilesTable({
             </Head>
             <Body>
                 {sortedAttachments.map(
-                    (attachment: collectedAttachmens, index: number) => (
+                    (attachment: collectedAttachmens, index) => (
                         <Row key={index}>
                             <Cell
                                 isTruncated

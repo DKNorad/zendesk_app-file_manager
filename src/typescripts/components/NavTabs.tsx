@@ -204,7 +204,12 @@ function NavTabs(): React.ReactNode {
                 <Tab item="Text Files" disabled={textFiles.length === 0}>
                     Text Files ({textFiles.length})
                 </Tab>
-                <Tab item="Images">
+                <Tab
+                    item="Images"
+                    disabled={
+                        imageFiles.length + embeddedImageFiles.length === 0
+                    }
+                >
                     Images ({imageFiles.length + embeddedImageFiles.length})
                 </Tab>
                 <Tab item="PDFs">PDFs ({pdfFiles.length})</Tab>
