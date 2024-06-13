@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
-import FilesTable from "./FilesTable"
+import FilesTable from "./FilesTable/FilesTable"
 import { getZendeskClient, getSubDomain } from "./ZenDeskClient"
-import ImagesTable from "./ImagesTable"
+import ImagesTable from "./ImagesTable/ImagesTable"
 import LoaderSkeleton from "./loaders/LoaderSkeleton"
 import {
     commentObject,
