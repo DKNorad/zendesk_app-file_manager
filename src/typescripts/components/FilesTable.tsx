@@ -194,7 +194,7 @@ function FilesTable({
                 <Body>
                     {sortedAttachments.map(
                         (attachment: collectedAttachmens, index) => (
-                            <Row key={index}>
+                            <Row key={index} isStriped={index % 2 === 0}>
                                 <Cell
                                     isTruncated
                                     style={{
