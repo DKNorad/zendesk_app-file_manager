@@ -9,8 +9,9 @@ import {
     SortableCell,
     Table,
 } from "@zendeskgarden/react-tables"
-import OverflowMenu from "./OverflowMenu"
-import LoaderSkeleton from "./loaders/LoaderSkeleton"
+import { Tooltip } from "@zendeskgarden/react-tooltips"
+import OverflowMenu from "../OverflowMenu"
+import LoaderSkeleton from "../loaders/LoaderSkeleton"
 import {
     documentIcon,
     formatBytes,
@@ -18,25 +19,26 @@ import {
     genericIcon,
     pdfIcon,
     zipIcon,
-} from "../utils/utils"
+} from "../../utils/utils"
 import {
     FilesTableattachmentsObj,
     collectedAttachmens,
-} from "../utils/interfaces"
+} from "../../utils/interfaces"
 import { FaSearch } from "react-icons/fa"
 
 function FilesTable({
     attachments,
 }: FilesTableattachmentsObj): React.ReactNode {
     const [loading, setLoading] = useState<boolean>(true)
-    const [searchInput, setSearchInput] = useState<string>("")
-    const [filteredAttachments, setFilteredAttachments] = useState<
-        collectedAttachmens[]
-    >([])
+
     const [sortColumn, setSortColumn] = useState<string>("fileName")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
 
+    const [searchInput, setSearchInput] = useState<string>("")
     const [searchExpanded, setSearchExpanded] = useState<boolean>(false)
+    const [filteredAttachments, setFilteredAttachments] = useState<
+        collectedAttachmens[]
+    >([])
 
     useEffect(() => {
         setLoading(false)
@@ -50,7 +52,7 @@ function FilesTable({
                     .includes(searchInput.toLowerCase()),
             )
             setFilteredAttachments(filtered)
-        }, 300)
+        }, 500)
 
         return () => clearTimeout(delaySearch)
     }, [attachments, searchInput])
@@ -66,14 +68,14 @@ function FilesTable({
     }
 
     const handleSearchInputBlur = () => {
-        setSearchExpanded(false)
+        setSearchExpanded(searchInput !== "")
     }
 
     const handleSearchInputKeyDown = (
         event: React.KeyboardEvent<HTMLInputElement>,
     ) => {
         if (event.key === "Escape") {
-            setSearchExpanded(false)
+            setSearchExpanded(searchInput !== "")
         }
     }
 
@@ -201,6 +203,7 @@ function FilesTable({
                                         width: "45%",
                                     }}
                                 >
+                                    {" "}
                                     <img
                                         src={
                                             contentTypeImages[
@@ -209,8 +212,11 @@ function FilesTable({
                                         }
                                         style={{ paddingRight: "5px" }}
                                     />
-                                    {attachment.fileName}
+                                    <Tooltip content={attachment.fileName}>
+                                        <span>{attachment.fileName}</span>
+                                    </Tooltip>
                                 </Cell>
+
                                 <Cell
                                     style={{
                                         width: "22.5%",
