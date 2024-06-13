@@ -15,6 +15,7 @@ import {
     AttachedImagesattachmentsObj,
     collectedAttachmens,
 } from "../../utils/interfaces"
+import { FaSearch } from "react-icons/fa"
 
 const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     attachments,
@@ -23,12 +24,18 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
     const [popupImage, setPopupImage] = useState<string | null>(null)
 
+    const [searchInput, setSearchInput] = useState<string>("")
+    const [searchExpanded, setSearchExpanded] = useState<boolean>(false)
+    const [filteredAttachments, setFilteredAttachments] = useState<
+        collectedAttachmens[]
+    >([])
+
     if (attachments.length === 0) {
         return null
     }
 
     // Sort attachments based on the selected column and order
-    const sortedAttachments = [...attachments].sort((a, b) => {
+    const sortedAttachments = [...filteredAttachments].sort((a, b) => {
         const aValue = a[sortColumn]
         const bValue = b[sortColumn]
 
@@ -58,6 +65,41 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
 
     const handlePopupClose = () => {
         setPopupImage(null)
+    }
+
+    useEffect(() => {
+        const delaySearch = setTimeout(() => {
+            const filtered = attachments.filter((attachment) =>
+                attachment.fileName
+                    .toLowerCase()
+                    .includes(searchInput.toLowerCase()),
+            )
+            setFilteredAttachments(filtered)
+        }, 500)
+
+        return () => clearTimeout(delaySearch)
+    }, [attachments, searchInput])
+
+    const handleSearchInputChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        setSearchInput(event.target.value)
+    }
+
+    const toggleSearch = () => {
+        setSearchExpanded(!searchExpanded)
+    }
+
+    const handleSearchInputBlur = () => {
+        setSearchExpanded(searchInput !== "")
+    }
+
+    const handleSearchInputKeyDown = (
+        event: React.KeyboardEvent<HTMLInputElement>,
+    ) => {
+        if (event.key === "Escape") {
+            setSearchExpanded(searchInput !== "")
+        }
     }
 
     return (
@@ -120,6 +162,47 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                     }
                 `}
             </style>
+            <div className="search-container" style={{ alignItems: "left" }}>
+                <div
+                    className={`search-icon ${
+                        searchExpanded ? "expanded" : ""
+                    }`}
+                    onClick={toggleSearch}
+                    style={{
+                        padding: "8px",
+                        transition: "all 0.3s ease-in-out",
+                        cursor: "pointer",
+                    }}
+                >
+                    <FaSearch
+                        style={{
+                            fontSize: "18px",
+                            color: searchExpanded ? "#333" : "#888",
+                        }}
+                    />
+                </div>
+                {searchExpanded && (
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search..."
+                        value={searchInput}
+                        onChange={handleSearchInputChange}
+                        onBlur={handleSearchInputBlur}
+                        onKeyDown={handleSearchInputKeyDown}
+                        style={{
+                            borderRadius: "20px",
+                            padding: "8px 12px",
+                            width: "200px",
+                            overflow: "hidden",
+                            border: "1px solid #ccc",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            transition: "all 0.3s ease-in-out",
+                            marginLeft: "8px",
+                        }}
+                    />
+                )}
+            </div>
             <Table>
                 <Head>
                     <HeaderRow>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
-import EmbeddedImagesTable from "./imagesTable/EmbeddedImages"
-import AttachedImagesTable from "./imagesTable/AttachedImages"
-import { ImagesTableattachmentsObj } from "../utils/interfaces"
-import { getUniqueImageUrls } from "../utils/utils"
+import EmbeddedImagesTable from "./EmbeddedImages"
+import AttachedImagesTable from "./AttachedImages"
+import { ImagesTableattachmentsObj } from "../../utils/interfaces"
+import { getUniqueImageUrls } from "../../utils/utils"
 import { Field, Label, Toggle } from "@zendeskgarden/react-forms"
-import LoaderSkeleton from "./loaders/LoaderSkeleton"
+import LoaderSkeleton from "../loaders/LoaderSkeleton"
 
 const ImagesTable: React.FC<ImagesTableattachmentsObj> = ({
     attachedImages,
