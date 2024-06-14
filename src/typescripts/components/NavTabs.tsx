@@ -3,7 +3,7 @@ import { Tabs, TabList, Tab, TabPanel } from "@zendeskgarden/react-tabs"
 import FilesTable from "./FilesTable/FilesTable"
 import { getZendeskClient, getSubDomain } from "./ZenDeskClient"
 import ImagesTable from "./ImagesTable/ImagesTable"
-import LoaderSkeleton from "./loaders/LoaderSkeleton"
+import LoaderSkeleton from "./Loaders/LoaderSkeleton"
 import {
     commentObject,
     commentsObject,
@@ -46,13 +46,22 @@ async function getCommentData(): Promise<
 }
 
 async function checkForEmbeddedImage(comment: commentObject) {
+    console.log(zafClient.metadata())
     const subdomain = await getSubDomain()
     const embeddedImageRegex1 = new RegExp(
         `!\\[\\]\\((https:\\/\\/${subdomain}\\.telco\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
         "g",
     )
     const embeddedImageRegex2 = new RegExp(
+        `!\\[\\]\\((https:\\/\\/${subdomain}\\.telco\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
+        "g",
+    )
+    const embeddedImageRegex3 = new RegExp(
         `!\\[\\]\\((https:\\/\\/${subdomain}\\.zendesk\\.com\\/attachments\\/token\\/[^\\/?]+\\/\\?name=[^\\)]+)\\)`,
+        "g",
+    )
+    const embeddedImageRegex4 = new RegExp(
+        `!\\[image]\\((https:\\/\\/${subdomain}\\.zendesk\\.com\\/attachments\\/token\\/[^\\/?]+\\/\\?name=[^\\)]+)\\)`,
         "g",
     )
 
@@ -64,6 +73,12 @@ async function checkForEmbeddedImage(comment: commentObject) {
     }
 
     while ((match = embeddedImageRegex2.exec(comment.body)) !== null) {
+        matches.push(match[1])
+    }
+    while ((match = embeddedImageRegex3.exec(comment.body)) !== null) {
+        matches.push(match[1])
+    }
+    while ((match = embeddedImageRegex4.exec(comment.body)) !== null) {
         matches.push(match[1])
     }
     return matches
