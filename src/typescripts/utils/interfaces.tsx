@@ -10,9 +10,9 @@ export interface AppState {
 }
 
 // ImagesTable
-export interface ImagesTableattachmentsObj {
+export interface ImagesTableAttachmentsObj {
     attachedImages: Array<collectedAttachmens>
-    EmbeddedImages: Array<CollectedEmbeddedImages>
+    embeddedImages: Array<CollectedEmbeddedImages>
 }
 
 // AttachedImages
@@ -104,7 +104,7 @@ export interface collectedAttachmens {
 
 export interface CollectedEmbeddedImages {
     contentUrl: string
-    fileName: string | null
+    fileName: string
     timestamp: string
     [key: string]: any
 }
