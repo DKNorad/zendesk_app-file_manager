@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import {
     Body,
     Cell,
@@ -15,7 +15,8 @@ import {
     AttachedImagesattachmentsObj,
     collectedAttachmens,
 } from "../../utils/interfaces"
-import { FaSearch } from "react-icons/fa"
+import "./ImagesTable.css"
+import { Tooltip } from "@zendeskgarden/react-tooltips"
 
 const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     attachments,
@@ -24,18 +25,12 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
     const [popupImage, setPopupImage] = useState<string | null>(null)
 
-    const [searchInput, setSearchInput] = useState<string>("")
-    const [searchExpanded, setSearchExpanded] = useState<boolean>(false)
-    const [filteredAttachments, setFilteredAttachments] = useState<
-        collectedAttachmens[]
-    >([])
-
     if (attachments.length === 0) {
         return null
     }
 
     // Sort attachments based on the selected column and order
-    const sortedAttachments = [...filteredAttachments].sort((a, b) => {
+    const sortedAttachments = [...attachments].sort((a, b) => {
         const aValue = a[sortColumn]
         const bValue = b[sortColumn]
 
@@ -67,142 +62,8 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
         setPopupImage(null)
     }
 
-    useEffect(() => {
-        const delaySearch = setTimeout(() => {
-            const filtered = attachments.filter((attachment) =>
-                attachment.fileName
-                    .toLowerCase()
-                    .includes(searchInput.toLowerCase()),
-            )
-            setFilteredAttachments(filtered)
-        }, 500)
-
-        return () => clearTimeout(delaySearch)
-    }, [attachments, searchInput])
-
-    const handleSearchInputChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        setSearchInput(event.target.value)
-    }
-
-    const toggleSearch = () => {
-        setSearchExpanded(!searchExpanded)
-    }
-
-    const handleSearchInputBlur = () => {
-        setSearchExpanded(searchInput !== "")
-    }
-
-    const handleSearchInputKeyDown = (
-        event: React.KeyboardEvent<HTMLInputElement>,
-    ) => {
-        if (event.key === "Escape") {
-            setSearchExpanded(searchInput !== "")
-        }
-    }
-
     return (
         <>
-            <style>
-                {`
-                    .cell-with-image {
-                        position: relative;
-                        width: 20%;
-                        height: 85px;
-                        cursor: zoom-in;
-                    }
-
-                    .cell-with-image img {
-                        max-width: 60%;
-                        height: auto;
-                    }
-
-                    .image-popup-overlay {
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(0, 0, 0, 0.5);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        z-index: 999;
-                    }
-
-                    .image-popup {
-                        position: relative;
-                        max-width: 80%;
-                        max-height: 80%;
-                        background-color: #fff;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        border-radius: 8px;
-                        padding: 10px;
-                        overflow: hidden;
-                    }
-
-                    .image-popup img {
-                        max-width: 100%;
-                        max-height: 100%;
-                        display: block;
-                    }
-
-                    .close-button {
-                        position: absolute;
-                        top: 10px;
-                        right: 10px;
-                        background: rgba(0, 0, 0, 0.5);
-                        border: none;
-                        color: #fff;
-                        padding: 5px 10px;
-                        cursor: pointer;
-                        font-size: 16px;
-                        border-radius: 50%;
-                    }
-                `}
-            </style>
-            <div className="search-container" style={{ alignItems: "left" }}>
-                <div
-                    className={`search-icon ${
-                        searchExpanded ? "expanded" : ""
-                    }`}
-                    onClick={toggleSearch}
-                    style={{
-                        padding: "8px",
-                        transition: "all 0.3s ease-in-out",
-                        cursor: "pointer",
-                    }}
-                >
-                    <FaSearch
-                        style={{
-                            fontSize: "18px",
-                            color: searchExpanded ? "#333" : "#888",
-                        }}
-                    />
-                </div>
-                {searchExpanded && (
-                    <input
-                        type="text"
-                        className="search-input"
-                        placeholder="Search..."
-                        value={searchInput}
-                        onChange={handleSearchInputChange}
-                        onBlur={handleSearchInputBlur}
-                        onKeyDown={handleSearchInputKeyDown}
-                        style={{
-                            borderRadius: "20px",
-                            padding: "8px 12px",
-                            width: "200px",
-                            overflow: "hidden",
-                            border: "1px solid #ccc",
-                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                            transition: "all 0.3s ease-in-out",
-                            marginLeft: "8px",
-                        }}
-                    />
-                )}
-            </div>
             <Table>
                 <Head>
                     <HeaderRow>
@@ -238,16 +99,7 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                 style={{ height: "85px" }}
                                 isStriped={index % 2 === 0}
                             >
-                                <Cell
-                                    className="cell-with-image"
-                                    onClick={() =>
-                                        handleClick(
-                                            attachment.contentUrl
-                                                ? attachment.contentUrl
-                                                : missingImage,
-                                        )
-                                    }
-                                >
+                                <Cell className="cell-with-image">
                                     {attachment.thumbnails &&
                                     attachment.thumbnails[0] ? (
                                         <img
@@ -256,11 +108,25 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                                     .content_url
                                             }
                                             alt={attachment.fileName}
+                                            onClick={() =>
+                                                handleClick(
+                                                    attachment.contentUrl
+                                                        ? attachment.contentUrl
+                                                        : missingImage,
+                                                )
+                                            }
                                         />
                                     ) : (
                                         <img
                                             src={missingImage}
                                             alt={"No thumbnail"}
+                                            onClick={() =>
+                                                handleClick(
+                                                    attachment.contentUrl
+                                                        ? attachment.contentUrl
+                                                        : missingImage,
+                                                )
+                                            }
                                         />
                                     )}
                                 </Cell>
@@ -271,7 +137,9 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                         verticalAlign: "middle",
                                     }}
                                 >
-                                    {attachment.fileName}
+                                    <Tooltip content={attachment.fileName}>
+                                        <span>{attachment.fileName}</span>
+                                    </Tooltip>
                                 </Cell>
                                 <Cell
                                     style={{
