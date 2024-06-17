@@ -46,7 +46,6 @@ async function getCommentData(): Promise<
 }
 
 async function checkForEmbeddedImage(comment: commentObject) {
-    console.log(zafClient.metadata())
     const subdomain = await getSubDomain()
     const embeddedImageRegex1 = new RegExp(
         `!\\[\\]\\((https:\\/\\/${subdomain}\\.telco\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
@@ -117,7 +116,7 @@ async function getAttachmentData(
             if (!alreadyAdded) {
                 const obj: CollectedEmbeddedImages = {
                     contentUrl: imageUrl,
-                    fileName: filename,
+                    fileName: filename ?? "Unknown",
                     timestamp: comment.created_at,
                 }
                 collectedEmbeddedImage.push(obj)
@@ -210,6 +209,7 @@ function NavTabs(): React.ReactNode {
                 console.error("Error fetching attachment data:", error)
             }
         }
+
         fetchData()
     }, [])
 
@@ -255,7 +255,7 @@ function NavTabs(): React.ReactNode {
                     ) : (
                         <ImagesTable
                             attachedImages={imageFiles}
-                            EmbeddedImages={embeddedImageFiles}
+                            embeddedImages={embeddedImageFiles}
                         />
                     )}
                 </TabPanel>
