@@ -14,13 +14,7 @@ import {
 const zafClient = getZendeskClient()
 
 async function getCommentData(): Promise<
-    | [
-          collectedAttachmens[],
-          CollectedEmbeddedImages[],
-          collectedAttachmens[],
-          collectedAttachmens[],
-          collectedAttachmens[],
-      ]
+    | [collectedAttachmens[], CollectedEmbeddedImages[], collectedAttachmens[]]
     | undefined
 > {
     try {
@@ -88,18 +82,10 @@ async function getAttachmentData(
     fileType: Array<string> | null,
     ticketID: number,
 ): Promise<
-    [
-        collectedAttachmens[],
-        CollectedEmbeddedImages[],
-        collectedAttachmens[],
-        collectedAttachmens[],
-        collectedAttachmens[],
-    ]
+    [collectedAttachmens[], CollectedEmbeddedImages[], collectedAttachmens[]]
 > {
-    const collectedText: collectedAttachmens[] = []
+    const collectedFiles: collectedAttachmens[] = []
     const collectedImages: collectedAttachmens[] = []
-    const collectedPDF: collectedAttachmens[] = []
-    const collectedOther: collectedAttachmens[] = []
     const collectedEmbeddedImage: CollectedEmbeddedImages[] = []
 
     for (const comment of commentData.comments) {
@@ -149,35 +135,23 @@ async function getAttachmentData(
 
                 if (attachment.content_type.includes("image")) {
                     collectedImages.push(obj)
-                } else if (attachment.content_type.includes("pdf")) {
-                    collectedPDF.push(obj)
-                } else if (attachment.content_type.includes("text")) {
-                    collectedText.push(obj)
                 } else {
-                    collectedOther.push(obj)
+                    collectedFiles.push(obj)
                 }
             }
         }
     }
 
-    return [
-        collectedImages,
-        collectedEmbeddedImage,
-        collectedPDF,
-        collectedText,
-        collectedOther,
-    ]
+    return [collectedImages, collectedEmbeddedImage, collectedFiles]
 }
 
 function NavTabs(): React.ReactNode {
-    const [selectedTab, setSelectedTab] = useState("Text Files")
+    const [selectedTab, setSelectedTab] = useState("Files")
     const [imageFiles, setImageFiles] = useState<collectedAttachmens[]>([])
     const [embeddedImageFiles, setEmbeddedImageFiles] = useState<
         CollectedEmbeddedImages[]
     >([])
-    const [pdfFiles, setPdfFiles] = useState<collectedAttachmens[]>([])
-    const [textFiles, setTextFiles] = useState<collectedAttachmens[]>([])
-    const [otherFiles, setOtherFiles] = useState<collectedAttachmens[]>([])
+    const [files, setFiles] = useState<collectedAttachmens[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
@@ -185,24 +159,14 @@ function NavTabs(): React.ReactNode {
             try {
                 const data = await getCommentData()
                 if (data) {
-                    const [
-                        imageData,
-                        embeddedImageData,
-                        pdfData,
-                        textData,
-                        otherData,
-                    ] = data as [
+                    const [imageData, embeddedImageData, fileData] = data as [
                         collectedAttachmens[],
                         CollectedEmbeddedImages[],
-                        collectedAttachmens[],
-                        collectedAttachmens[],
                         collectedAttachmens[],
                     ]
                     setImageFiles(imageData)
                     setEmbeddedImageFiles(embeddedImageData)
-                    setPdfFiles(pdfData)
-                    setTextFiles(textData)
-                    setOtherFiles(otherData)
+                    setFiles(fileData)
                     setLoading(false)
                 }
             } catch (error) {
@@ -216,33 +180,32 @@ function NavTabs(): React.ReactNode {
     return (
         <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
             <TabList>
-                <Tab item="Text Files" disabled={textFiles.length === 0}>
-                    Text Files ({textFiles.length})
+                <Tab item="Files" disabled={files.length === 0}>
+                    Files ({files.length})
                 </Tab>
                 <Tab
-                    item="Images"
+                    item="Media"
                     disabled={
                         imageFiles.length + embeddedImageFiles.length === 0
                     }
                 >
-                    Images ({imageFiles.length + embeddedImageFiles.length})
+                    Media ({imageFiles.length + embeddedImageFiles.length})
                 </Tab>
-                <Tab item="PDFs">PDFs ({pdfFiles.length})</Tab>
-                <Tab item="Other">Other ({otherFiles.length})</Tab>
+                <Tab item="Links">Links</Tab>
             </TabList>
-            {textFiles.length > 0 && (
-                <TabPanel item="Text Files">
+            {files.length > 0 && (
+                <TabPanel item="Files">
                     {loading ? (
                         <div style={{ textAlign: "center", marginTop: "20px" }}>
-                            <LoaderSkeleton items={textFiles.length} />
+                            <LoaderSkeleton items={files.length} />
                         </div>
                     ) : (
-                        <FilesTable attachments={textFiles} />
+                        <FilesTable attachments={files} />
                     )}
                 </TabPanel>
             )}
             {(imageFiles.length > 0 || embeddedImageFiles.length > 0) && (
-                <TabPanel item="Images">
+                <TabPanel item="Media">
                     {loading ? (
                         <div
                             style={{
@@ -260,36 +223,6 @@ function NavTabs(): React.ReactNode {
                     )}
                 </TabPanel>
             )}
-            <TabPanel item="PDFs">
-                {loading ? (
-                    <div style={{ textAlign: "center", marginTop: "20px" }}>
-                        <LoaderSkeleton items={pdfFiles.length} />
-                    </div>
-                ) : (
-                    <>
-                        {pdfFiles && pdfFiles.length > 0 ? (
-                            <FilesTable attachments={pdfFiles} />
-                        ) : (
-                            <p>No PDF files found.</p>
-                        )}
-                    </>
-                )}
-            </TabPanel>
-            <TabPanel item="Other">
-                {loading ? (
-                    <div style={{ textAlign: "center", marginTop: "20px" }}>
-                        <LoaderSkeleton items={otherFiles.length} />
-                    </div>
-                ) : (
-                    <>
-                        {otherFiles && otherFiles.length > 0 ? (
-                            <FilesTable attachments={otherFiles} />
-                        ) : (
-                            <p>No Other attachments found.</p>
-                        )}
-                    </>
-                )}
-            </TabPanel>
         </Tabs>
     )
 }

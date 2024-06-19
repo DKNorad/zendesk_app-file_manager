@@ -11,13 +11,16 @@ import {
 } from "@zendeskgarden/react-tables"
 import { Tooltip } from "@zendeskgarden/react-tooltips"
 import OverflowMenu from "../OverflowMenu"
-import LoaderSkeleton from "../loaders/LoaderSkeleton"
+import LoaderSkeleton from "../Loaders/LoaderSkeleton"
 import {
+    appMimeTypes,
     documentIcon,
     formatBytes,
     formatDate,
     genericIcon,
+    otherMimeTypes,
     pdfIcon,
+    textMimeTypes,
     zipIcon,
 } from "../../utils/utils"
 import {
@@ -55,7 +58,7 @@ function FilesTable({
         }, 500)
 
         return () => clearTimeout(delaySearch)
-    }, [attachments, searchInput])
+    }, [searchInput])
 
     const handleSearchInputChange = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -121,6 +124,24 @@ function FilesTable({
         "application/zip": zipIcon,
     }
 
+    function getMimeType(contentType: string): string {
+        let mime = ""
+
+        if (contentType.startsWith("text/")) {
+            mime = textMimeTypes[contentType]
+        } else if (contentType.startsWith("application/")) {
+            mime = appMimeTypes[contentType]
+        } else {
+            mime = otherMimeTypes[contentType]
+        }
+
+        if (mime) {
+            return mime
+        } else {
+            return "File"
+        }
+    }
+
     return (
         <div className="files-table-container">
             <div
@@ -179,6 +200,13 @@ function FilesTable({
                         <SortableCell
                             width={"22.5%"}
                             style={{ float: "right" }}
+                            onClick={() => toggleSortOrder("type")}
+                        >
+                            Type
+                        </SortableCell>
+                        <SortableCell
+                            width={"22.5%"}
+                            style={{ float: "right" }}
                             onClick={() => toggleSortOrder("size")}
                         >
                             Size
@@ -216,7 +244,14 @@ function FilesTable({
                                         <span>{attachment.fileName}</span>
                                     </Tooltip>
                                 </Cell>
-
+                                <Cell
+                                    style={{
+                                        width: "22.5%",
+                                        textAlign: "right",
+                                    }}
+                                >
+                                    {getMimeType(attachment.contentType)}
+                                </Cell>
                                 <Cell
                                     style={{
                                         width: "22.5%",
