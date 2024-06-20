@@ -2,7 +2,7 @@
 
 The only attachment manager you'll need for your ZenDesk Support portal. All files in one place.
 ![screenshot](https://i.imgur.com/ouTKGPo.png)
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ![screenshot](https://i.imgur.com/MJreVAD.png)
 
 ## Completed features
@@ -25,15 +25,15 @@ The only attachment manager you'll need for your ZenDesk Support portal. All fil
 
 ## TODO:
 
--   Open PDF files without downloading them.
--   Open different document files without downloading them.
--   Open media files without downloading them.
--   Bulk deletion of files.
--   Bulk download of files.
--   ~~Better icon pack for the file types.~~
--   ~~Improved design.~~
+-   [ ] Open PDF files without downloading them.
+-   [ ] Open different document files without downloading them.
+-   [ ] Open media files without downloading them.
+-   [ ] Bulk deletion of files.
+-   [ ] Bulk download of files.
+-   [x] ~~Better icon pack for the file types.~~
+-   [x] ~~Improved design.~~
 
 ## Resources used:
 
-[Images from https://icons8.com](https://icons8.com)
-[A pure typescript scaffold for developing apps in Zendesk with React by Joshlha](https://github.com/Joshlha/zd-ts-react)
+-   [Images from https://icons8.com](https://icons8.com)
+-   [A pure typescript scaffold for developing apps in Zendesk with React by Joshlha](https://github.com/Joshlha/zd-ts-react)
