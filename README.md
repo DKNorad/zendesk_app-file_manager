@@ -30,8 +30,8 @@ The only attachment manager you'll need for your ZenDesk Support portal. All fil
 -   [ ] Open media files without downloading them.
 -   [ ] Bulk deletion of files.
 -   [ ] Bulk download of files.
--   [x] ~~Better icon pack for the file types.~~
--   [x] ~~Improved design.~~
+-   [x] Better icon pack for the file types.
+-   [x] Improved design.
 
 ## Resources used:
 
