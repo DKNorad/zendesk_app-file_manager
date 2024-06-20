@@ -13,14 +13,11 @@ import { Tooltip } from "@zendeskgarden/react-tooltips"
 import OverflowMenu from "../OverflowMenu"
 import LoaderSkeleton from "../Loaders/LoaderSkeleton"
 import {
-    appMimeTypes,
     documentIcon,
     formatBytes,
     formatDate,
     genericIcon,
-    otherMimeTypes,
     pdfIcon,
-    textMimeTypes,
     zipIcon,
 } from "../../utils/utils"
 import {
@@ -102,7 +99,6 @@ function FilesTable({
         }
     }
 
-    // Sort attachments based on the selected column and order
     const sortedAttachments = [...filteredAttachments].sort((a, b) => {
         const aValue = a[sortColumn]
         const bValue = b[sortColumn]
@@ -142,24 +138,6 @@ function FilesTable({
         "application/unknown": genericIcon,
         "application/xml-dtd": documentIcon,
         "application/zip": zipIcon,
-    }
-
-    function getMimeType(contentType: string): string {
-        let mime = ""
-
-        if (contentType.startsWith("text/")) {
-            mime = textMimeTypes[contentType]
-        } else if (contentType.startsWith("application/")) {
-            mime = appMimeTypes[contentType]
-        } else {
-            mime = otherMimeTypes[contentType]
-        }
-
-        if (mime) {
-            return mime
-        } else {
-            return "File"
-        }
     }
 
     return (
@@ -211,7 +189,7 @@ function FilesTable({
                                 style={{
                                     float: "right",
                                 }}
-                                onClick={() => toggleSortOrder("type")}
+                                onClick={() => toggleSortOrder("contentType")}
                             >
                                 Type
                             </SortableCell>
@@ -271,7 +249,7 @@ function FilesTable({
                                             textAlign: "right",
                                         }}
                                     >
-                                        {getMimeType(attachment.contentType)}
+                                        {attachment.contentType}
                                     </Cell>
                                 )}
                                 {widthStep < 3 && (

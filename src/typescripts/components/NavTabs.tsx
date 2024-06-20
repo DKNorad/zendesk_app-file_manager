@@ -10,6 +10,7 @@ import {
     collectedAttachmens,
     CollectedEmbeddedImages,
 } from "../utils/interfaces"
+import { appMimeTypes, otherMimeTypes, textMimeTypes } from "../utils/utils"
 
 const zafClient = getZendeskClient()
 
@@ -88,6 +89,23 @@ async function getAttachmentData(
     const collectedImages: collectedAttachmens[] = []
     const collectedEmbeddedImage: CollectedEmbeddedImages[] = []
 
+    function getMimeType(contentType: string): string {
+        let mime = ""
+
+        if (contentType.startsWith("text/")) {
+            mime = textMimeTypes[contentType]
+        } else if (contentType.startsWith("application/")) {
+            mime = appMimeTypes[contentType]
+        } else {
+            mime = otherMimeTypes[contentType]
+        }
+
+        if (mime) {
+            return mime
+        } else {
+            return "File"
+        }
+    }
     for (const comment of commentData.comments) {
         const embeddedImageData = await checkForEmbeddedImage(comment)
         for (const imageUrl of embeddedImageData) {
@@ -126,7 +144,7 @@ async function getAttachmentData(
                     timestamp: comment.created_at,
                     width: attachment.width,
                     height: attachment.height,
-                    contentType: attachment.content_type,
+                    contentType: getMimeType(attachment.content_type),
                     messageID: comment.id,
                     ticketID: ticketID,
                     attachmentID: attachment.id,
