@@ -1,6 +1,9 @@
 # File Viewer
 
 The only attachment manager you'll need for your ZenDesk Support portal. All files in one place.
+![screenshot](https://i.imgur.com/ouTKGPo.png)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+![screenshot](https://i.imgur.com/MJreVAD.png)
 
 ## Completed features
 
@@ -9,6 +12,7 @@ The only attachment manager you'll need for your ZenDesk Support portal. All fil
 -   File deletion.
 -   Sort files by name, size, date.
 -   Filter files with search.
+-   View all links in one place.
 
 ##### Specific file types features:
 
@@ -26,8 +30,8 @@ The only attachment manager you'll need for your ZenDesk Support portal. All fil
 -   Open media files without downloading them.
 -   Bulk deletion of files.
 -   Bulk download of files.
--   Better icon pack for the file types.
--   Improved design.
+-   ~~Better icon pack for the file types.~~
+-   ~~Improved design.~~
 
 ## Resources used:
 
