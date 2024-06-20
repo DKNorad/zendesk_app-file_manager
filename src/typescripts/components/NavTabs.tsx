@@ -10,7 +10,7 @@ import {
     collectedAttachmens,
     CollectedEmbeddedImages,
 } from "../utils/interfaces"
-import { appMimeTypes, otherMimeTypes, textMimeTypes } from "../utils/utils"
+import { getMimeType } from "../utils/utils"
 import genericFileIcon from "/src/images/file_types/icons8-file-80.png"
 import imageGalleryIcon from "/src/images/file_types/icons8-images-80.png"
 import urlIcon from "/src/images/file_types/icons8-link-80.png"
@@ -92,23 +92,6 @@ async function getAttachmentData(
     const collectedImages: collectedAttachmens[] = []
     const collectedEmbeddedImage: CollectedEmbeddedImages[] = []
 
-    function getMimeType(contentType: string): string {
-        let mime = ""
-
-        if (contentType.startsWith("text/")) {
-            mime = textMimeTypes[contentType]
-        } else if (contentType.startsWith("application/")) {
-            mime = appMimeTypes[contentType]
-        } else {
-            mime = otherMimeTypes[contentType]
-        }
-
-        if (mime) {
-            return mime
-        } else {
-            return "File"
-        }
-    }
     for (const comment of commentData.comments) {
         const embeddedImageData = await checkForEmbeddedImage(comment)
         for (const imageUrl of embeddedImageData) {
