@@ -17,6 +17,7 @@ import {
 } from "../../utils/interfaces"
 import "./ImagesTable.css"
 import { Tooltip } from "@zendeskgarden/react-tooltips"
+import imageIcon from "/src/images/file_types/icons8-image-file-80.png"
 
 const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
     attachments,

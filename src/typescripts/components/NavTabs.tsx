@@ -11,6 +11,9 @@ import {
     CollectedEmbeddedImages,
 } from "../utils/interfaces"
 import { appMimeTypes, otherMimeTypes, textMimeTypes } from "../utils/utils"
+import genericFileIcon from "/src/images/file_types/icons8-file-80.png"
+import imageGalleryIcon from "/src/images/file_types/icons8-images-80.png"
+import urlIcon from "/src/images/file_types/icons8-link-80.png"
 
 const zafClient = getZendeskClient()
 
@@ -144,7 +147,8 @@ async function getAttachmentData(
                     timestamp: comment.created_at,
                     width: attachment.width,
                     height: attachment.height,
-                    contentType: getMimeType(attachment.content_type),
+                    mimeType: getMimeType(attachment.content_type),
+                    contentType: attachment.content_type,
                     messageID: comment.id,
                     ticketID: ticketID,
                     attachmentID: attachment.id,
@@ -199,6 +203,10 @@ function NavTabs(): React.ReactNode {
         <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
             <TabList>
                 <Tab item="Files" disabled={files.length === 0}>
+                    <img
+                        src={genericFileIcon}
+                        style={{ width: "25px", paddingRight: "5px" }}
+                    />
                     Files ({files.length})
                 </Tab>
                 <Tab
@@ -207,9 +215,20 @@ function NavTabs(): React.ReactNode {
                         imageFiles.length + embeddedImageFiles.length === 0
                     }
                 >
+                    <img
+                        src={imageGalleryIcon}
+                        style={{ width: "25px", paddingRight: "5px" }}
+                    />
                     Media ({imageFiles.length + embeddedImageFiles.length})
                 </Tab>
-                <Tab item="Links">Links</Tab>
+                <Tab item="Links">
+                    {" "}
+                    <img
+                        src={urlIcon}
+                        style={{ width: "25px", paddingRight: "5px" }}
+                    />
+                    Links
+                </Tab>
             </TabList>
             {files.length > 0 && (
                 <TabPanel item="Files">

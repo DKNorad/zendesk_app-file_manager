@@ -13,20 +13,14 @@ import { Tooltip } from "@zendeskgarden/react-tooltips"
 import OverflowMenu from "../OverflowMenu"
 import LoaderSkeleton from "../Loaders/LoaderSkeleton"
 import {
-    documentIcon,
-    formatBytes,
-    formatDate,
-    genericIcon,
-    pdfIcon,
-    zipIcon,
-} from "../../utils/utils"
-import {
     FilesTableattachmentsObj,
     collectedAttachmens,
 } from "../../utils/interfaces"
 import { FaSearch } from "react-icons/fa"
 import { Col, Grid, Row as GridRow } from "@zendeskgarden/react-grid"
 import "./FilesTable.css"
+import { formatBytes, formatDate, contentTypeImages } from "../../utils/utils"
+import genericFileIcon from "/src/images/file_types/icons8-file-80.png"
 
 function FilesTable({
     attachments,
@@ -127,19 +121,6 @@ function FilesTable({
         return <LoaderSkeleton items={attachments.length} />
     }
 
-    const contentTypeImages: { [key: string]: string } = {
-        "text/plain": documentIcon,
-        "text/x-log": documentIcon,
-        "text/csv": documentIcon,
-        "application/pdf": pdfIcon,
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            documentIcon,
-        "application/vnd.visio": genericIcon,
-        "application/unknown": genericIcon,
-        "application/xml-dtd": documentIcon,
-        "application/zip": zipIcon,
-    }
-
     return (
         <>
             <Grid>
@@ -234,9 +215,12 @@ function FilesTable({
                                         src={
                                             contentTypeImages[
                                                 attachment.contentType
-                                            ] || genericIcon
+                                            ] || genericFileIcon
                                         }
-                                        style={{ paddingRight: "5px" }}
+                                        style={{
+                                            paddingRight: "5px",
+                                            width: "27px",
+                                        }}
                                     />
                                     <Tooltip content={attachment.fileName}>
                                         <span>{attachment.fileName}</span>
@@ -249,7 +233,7 @@ function FilesTable({
                                             textAlign: "right",
                                         }}
                                     >
-                                        {attachment.contentType}
+                                        {attachment.mimeType}
                                     </Cell>
                                 )}
                                 {widthStep < 3 && (

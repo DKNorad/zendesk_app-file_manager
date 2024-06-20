@@ -46,7 +46,7 @@ const config: webpack.Configuration = {
                 ],
             },
             {
-                test: /\.svg$/,
+                test: /\.(png|jpe?g|gif|svg)$/i,
                 use: [
                     {
                         loader: "file-loader",

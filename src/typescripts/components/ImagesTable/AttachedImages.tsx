@@ -10,13 +10,14 @@ import {
     Table,
 } from "@zendeskgarden/react-tables"
 import OverflowMenu from "../OverflowMenu"
-import { formatBytes, formatDate, missingImage } from "../../utils/utils"
+import { formatBytes, formatDate } from "../../utils/utils"
 import {
     AttachedImagesattachmentsObj,
     collectedAttachmens,
 } from "../../utils/interfaces"
 import "./ImagesTable.css"
 import { Tooltip } from "@zendeskgarden/react-tooltips"
+import imageIcon from "/src/images/file_types/icons8-image-file-80.png"
 
 const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     attachments,
@@ -132,19 +133,19 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                                 handleClick(
                                                     attachment.contentUrl
                                                         ? attachment.contentUrl
-                                                        : missingImage,
+                                                        : imageIcon,
                                                 )
                                             }
                                         />
                                     ) : (
                                         <img
-                                            src={missingImage}
+                                            src={imageIcon}
                                             alt={"No thumbnail"}
                                             onClick={() =>
                                                 handleClick(
                                                     attachment.contentUrl
                                                         ? attachment.contentUrl
-                                                        : missingImage,
+                                                        : imageIcon,
                                                 )
                                             }
                                         />

@@ -89,6 +89,7 @@ export interface attachment {
 
 export interface collectedAttachmens {
     contentType: string
+    mimeType: string
     contentUrl: string
     fileName: string
     height: number | null

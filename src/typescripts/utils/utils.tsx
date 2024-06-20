@@ -997,6 +997,83 @@ export const otherMimeTypes: { [key: string]: string } = {
     "x-conference/x-cooltalk": "CoolTalk",
 }
 
+// File icons
+import pdfIcon from "/src/images/file_types/icons8-pdf-80.png"
+import archiveIcon from "/src/images/file_types/icons8-archive-80.png"
+import textIcon from "/src/images/file_types/icons8-txt-80.png"
+import htmlIcon from "/src/images/file_types/icons8-html-filetype-80.png"
+import cssIcon from "/src/images/file_types/icons8-css-filetype-80.png"
+import jsonIcon from "/src/images/file_types/icons8-json-80.png"
+import xmlIcon from "/src/images/file_types/icons8-xml-file-80.png"
+import zipIcon from "/src/images/file_types/icons8-zip-80.png"
+import xamlIcon from "/src/images/file_types/icons8-xaml-80.png"
+import wordIcon from "/src/images/file_types/icons8-word-file-80.png"
+import woffIcon from "/src/images/file_types/icons8-woff-80.png"
+import videoIcon from "/src/images/file_types/icons8-video-file-80.png"
+import ttfIcon from "/src/images/file_types/icons8-ttf-80.png"
+import tarIcon from "/src/images/file_types/icons8-tar-80.png"
+import sqlIcon from "/src/images/file_types/icons8-sql-80.png"
+import rrpIcon from "/src/images/file_types/icons8-rrp-80.png"
+import bookIcon from "/src/images/file_types/icons8-read-80.png"
+import rarIcon from "/src/images/file_types/icons8-rar-80.png"
+import otfIcon from "/src/images/file_types/icons8-otf-80.png"
+import mysqlIcon from "/src/images/file_types/icons8-mysql-80.png"
+import mobiIcon from "/src/images/file_types/icons8-mobi-80.png"
+import imageIcon from "/src/images/file_types/icons8-image-file-80.png"
+import fb2Icon from "/src/images/file_types/icons8-fb2-80.png"
+import exeIcon from "/src/images/file_types/icons8-exe-80.png"
+import epubIcon from "/src/images/file_types/icons8-epub-80.png"
+import genericDocumentIcon from "/src/images/file_types/icons8-document-80.png"
+import docIcon from "/src/images/file_types/icons8-doc-80.png"
+import dmgIcon from "/src/images/file_types/icons8-dmg-80.png"
+import codeIcon from "/src/images/file_types/icons8-code-file-80.png"
+import cloudFileIcon from "/src/images/file_types/icons8-cloud-file-80.png"
+import cbzIcon from "/src/images/file_types/icons8-cbz-80.png"
+import cbrIcon from "/src/images/file_types/icons8-cbr-80.png"
+import audioBookIcon from "/src/images/file_types/icons8-audio-book-80.png"
+import apkIcon from "/src/images/file_types/icons8-apk-80.png"
+import sevenZipIcon from "/src/images/file_types/icons8-7zip-80.png"
+
+export const contentTypeImages: { [key: string]: string } = {
+    "application/pdf": pdfIcon,
+    "application/zip": zipIcon,
+    "application/java-archive": archiveIcon,
+    "application/vnd.android.package-archive": archiveIcon,
+    "application/vnd.joost.joda-archive": archiveIcon,
+    "application/x-bzip": archiveIcon,
+    "application/x-bzip2": archiveIcon,
+    "application/x-gzip": archiveIcon,
+    "application/x-rar-compressed": archiveIcon,
+    "application/x-tar": archiveIcon,
+    "application/x-7z-compressed": sevenZipIcon,
+    "application/x-zip-compressed": archiveIcon,
+    "application/x-ace-compressed": archiveIcon,
+    "text/plain": textIcon,
+    "text/html": htmlIcon,
+    "text/css": cssIcon,
+    "text/json": jsonIcon,
+    "text/xml": xmlIcon,
+    "text/x-asm": textIcon,
+    "text/x-c": codeIcon,
+    "text/x-c++": codeIcon,
+    "text/x-csh": codeIcon,
+    "text/x-diff": textIcon,
+    "text/x-java": codeIcon,
+    "text/x-lua": codeIcon,
+    "text/x-perl": codeIcon,
+    "text/x-php": codeIcon,
+    "text/x-python": codeIcon,
+    "text/x-ruby": codeIcon,
+    "text/x-sh": codeIcon,
+    "text/x-sql": sqlIcon,
+    "text/x-vb": codeIcon,
+    "text/x-vbscript": codeIcon,
+    "text/x-vim": codeIcon,
+    "text/x-xml": xmlIcon,
+    "text/x-yaml": textIcon,
+    "text/x-zsh": codeIcon,
+}
+
 // Images
 export const missingImage =
     require("@zendeskgarden/svg-icons/src/16/file-image-stroke.svg")
@@ -1006,18 +1083,6 @@ export const overFlowImage =
     require("@zendeskgarden/svg-icons/src/16/align-justify-stroke.svg")
         .default as string
 
-export const documentIcon =
-    require("@zendeskgarden/svg-icons/src/16/file-document-stroke.svg")
-        .default as string
-
-export const pdfIcon =
-    require("@zendeskgarden/svg-icons/src/16/file-pdf-stroke.svg")
-        .default as string
-
 export const genericIcon =
     require("@zendeskgarden/svg-icons/src/16/file-generic-stroke.svg")
-        .default as string
-
-export const zipIcon =
-    require("@zendeskgarden/svg-icons/src/16/file-zip-stroke.svg")
         .default as string

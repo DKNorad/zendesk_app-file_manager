@@ -31,4 +31,5 @@ The only attachment manager you'll need for your ZenDesk Support portal. All fil
 
 ## Resources used:
 
+[Images from https://icons8.com](https://icons8.com)
 [A pure typescript scaffold for developing apps in Zendesk with React by Joshlha](https://github.com/Joshlha/zd-ts-react)
