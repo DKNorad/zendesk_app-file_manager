@@ -88,6 +88,7 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                         <SortableCell
                             width={"30%"}
                             onClick={() => toggleSortOrder("fileName")}
+                            sort={sortOrder === "asc" ? "asc" : "desc"}
                         >
                             Image name
                         </SortableCell>
@@ -96,6 +97,7 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                 width={"20%"}
                                 style={{ float: "right" }}
                                 onClick={() => toggleSortOrder("size")}
+                                sort={sortOrder === "asc" ? "asc" : "desc"}
                             >
                                 Size
                             </SortableCell>
@@ -105,6 +107,7 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                 width={"20%"}
                                 style={{ float: "right" }}
                                 onClick={() => toggleSortOrder("timestamp")}
+                                sort={sortOrder === "asc" ? "asc" : "desc"}
                             >
                                 Date
                             </SortableCell>

@@ -14,11 +14,17 @@ import { getMimeType } from "../utils/utils"
 import genericFileIcon from "/src/images/file_types/icons8-file-80.png"
 import imageGalleryIcon from "/src/images/file_types/icons8-images-80.png"
 import urlIcon from "/src/images/file_types/icons8-link-80.png"
+import LinksTable from "./LinksTable/LinksTable"
 
 const zafClient = getZendeskClient()
 
 async function getCommentData(): Promise<
-    | [collectedAttachmens[], CollectedEmbeddedImages[], collectedAttachmens[]]
+    | [
+          collectedAttachmens[],
+          CollectedEmbeddedImages[],
+          collectedAttachmens[],
+          string[],
+      ]
     | undefined
 > {
     try {
@@ -40,10 +46,13 @@ async function getCommentData(): Promise<
         return getAttachmentData(response, null, ticketId)
     } catch (error) {
         console.error("Failed to retrieve comments:", error)
+        return undefined
     }
 }
 
-async function checkForEmbeddedImage(comment: commentObject) {
+async function checkForEmbeddedImage(
+    comment: commentObject,
+): Promise<string[]> {
     const subdomain = await getSubDomain()
     const embeddedImageRegex1 = new RegExp(
         `!\\[\\]\\((https:\\/\\/${subdomain}\\.telco\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
@@ -81,19 +90,39 @@ async function checkForEmbeddedImage(comment: commentObject) {
     return matches
 }
 
+async function checkForLinks(comment: commentObject): Promise<string[]> {
+    const linkRegex = /href="(https?:\/\/[^"]*)"/g
+
+    const matches = new Set<string>()
+    let match
+    while ((match = linkRegex.exec(comment.html_body)) !== null) {
+        matches.add(match[1])
+    }
+    return Array.from(matches)
+}
+
 async function getAttachmentData(
     commentData: commentsObject,
     fileType: Array<string> | null,
     ticketID: number,
 ): Promise<
-    [collectedAttachmens[], CollectedEmbeddedImages[], collectedAttachmens[]]
+    [
+        collectedAttachmens[],
+        CollectedEmbeddedImages[],
+        collectedAttachmens[],
+        string[],
+    ]
 > {
     const collectedFiles: collectedAttachmens[] = []
     const collectedImages: collectedAttachmens[] = []
     const collectedEmbeddedImage: CollectedEmbeddedImages[] = []
+    const linkData = new Set<string>()
 
     for (const comment of commentData.comments) {
         const embeddedImageData = await checkForEmbeddedImage(comment)
+        const links = await checkForLinks(comment)
+        links.forEach((link) => linkData.add(link))
+
         for (const imageUrl of embeddedImageData) {
             const parsedUrl = new URL(imageUrl)
             const searchParams = new URLSearchParams(parsedUrl.search)
@@ -147,7 +176,14 @@ async function getAttachmentData(
         }
     }
 
-    return [collectedImages, collectedEmbeddedImage, collectedFiles]
+    const uniqueLinks = Array.from(linkData)
+
+    return [
+        collectedImages,
+        collectedEmbeddedImage,
+        collectedFiles,
+        uniqueLinks,
+    ]
 }
 
 function NavTabs(): React.ReactNode {
@@ -157,6 +193,7 @@ function NavTabs(): React.ReactNode {
         CollectedEmbeddedImages[]
     >([])
     const [files, setFiles] = useState<collectedAttachmens[]>([])
+    const [linkData, setLinkData] = useState<string[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
@@ -164,14 +201,12 @@ function NavTabs(): React.ReactNode {
             try {
                 const data = await getCommentData()
                 if (data) {
-                    const [imageData, embeddedImageData, fileData] = data as [
-                        collectedAttachmens[],
-                        CollectedEmbeddedImages[],
-                        collectedAttachmens[],
-                    ]
+                    const [imageData, embeddedImageData, fileData, urlData] =
+                        data
                     setImageFiles(imageData)
                     setEmbeddedImageFiles(embeddedImageData)
                     setFiles(fileData)
+                    setLinkData(urlData)
                     setLoading(false)
                 }
             } catch (error) {
@@ -204,13 +239,13 @@ function NavTabs(): React.ReactNode {
                     />
                     Media ({imageFiles.length + embeddedImageFiles.length})
                 </Tab>
-                <Tab item="Links">
+                <Tab item="Links" disabled={linkData.length === 0}>
                     {" "}
                     <img
                         src={urlIcon}
                         style={{ width: "25px", paddingRight: "5px" }}
                     />
-                    Links
+                    Links ({linkData.length})
                 </Tab>
             </TabList>
             {files.length > 0 && (
@@ -240,6 +275,22 @@ function NavTabs(): React.ReactNode {
                             attachedImages={imageFiles}
                             embeddedImages={embeddedImageFiles}
                         />
+                    )}
+                </TabPanel>
+            )}
+            {linkData.length > 0 && (
+                <TabPanel item="Links">
+                    {loading ? (
+                        <div
+                            style={{
+                                textAlign: "center",
+                                marginTop: "20px",
+                            }}
+                        >
+                            <LoaderSkeleton items={linkData.length} />
+                        </div>
+                    ) : (
+                        <LinksTable linksData={linkData} />
                     )}
                 </TabPanel>
             )}

@@ -139,3 +139,8 @@ export interface ConfirmDeleteModalProps {
 export interface FilesTableattachmentsObj {
     attachments: Array<collectedAttachmens>
 }
+
+//LinksTable
+export interface LinksTableProps {
+    linksData: string[]
+}

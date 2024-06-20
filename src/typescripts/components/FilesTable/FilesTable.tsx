@@ -159,18 +159,20 @@ function FilesTable({
                 <Head>
                     <HeaderRow>
                         <SortableCell
-                            width={"45%"}
+                            width={"47.5%"}
                             onClick={() => toggleSortOrder("fileName")}
+                            sort={sortOrder === "asc" ? "asc" : "desc"}
                         >
                             File name
                         </SortableCell>
                         {widthStep < 1 && (
                             <SortableCell
-                                width={"22.5%"}
+                                width={"20%"}
                                 style={{
                                     float: "right",
                                 }}
                                 onClick={() => toggleSortOrder("contentType")}
+                                sort={sortOrder === "asc" ? "asc" : "desc"}
                             >
                                 Type
                             </SortableCell>
@@ -182,6 +184,7 @@ function FilesTable({
                                     float: "right",
                                 }}
                                 onClick={() => toggleSortOrder("size")}
+                                sort={sortOrder === "asc" ? "asc" : "desc"}
                             >
                                 Size
                             </SortableCell>
@@ -193,6 +196,7 @@ function FilesTable({
                                     float: "right",
                                 }}
                                 onClick={() => toggleSortOrder("timestamp")}
+                                sort={sortOrder === "asc" ? "asc" : "desc"}
                             >
                                 Date
                             </SortableCell>
@@ -205,9 +209,10 @@ function FilesTable({
                         (attachment: collectedAttachmens, index) => (
                             <Row key={index} isStriped={index % 2 === 0}>
                                 <Cell
-                                    isTruncated
                                     style={{
-                                        width: "45%",
+                                        width: "100%",
+                                        display: "flex",
+                                        alignItems: "center",
                                     }}
                                 >
                                     {" "}
@@ -223,14 +228,25 @@ function FilesTable({
                                         }}
                                     />
                                     <Tooltip content={attachment.fileName}>
-                                        <span>{attachment.fileName}</span>
+                                        <span
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                flexGrow: 1,
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            {attachment.fileName}
+                                        </span>
                                     </Tooltip>
                                 </Cell>
                                 {widthStep < 1 && (
                                     <Cell
                                         style={{
-                                            width: "22.5%",
+                                            width: "20%",
                                             textAlign: "right",
+                                            verticalAlign: "middle",
                                         }}
                                     >
                                         {attachment.mimeType}
@@ -241,6 +257,7 @@ function FilesTable({
                                         style={{
                                             width: "22.5%",
                                             textAlign: "right",
+                                            verticalAlign: "middle",
                                         }}
                                     >
                                         {formatBytes(attachment.size)}
@@ -251,6 +268,7 @@ function FilesTable({
                                         style={{
                                             width: "22.5%",
                                             textAlign: "right",
+                                            verticalAlign: "middle",
                                         }}
                                     >
                                         {formatDate(attachment.timestamp)}

@@ -17,7 +17,6 @@ import {
 } from "../../utils/interfaces"
 import "./ImagesTable.css"
 import { Tooltip } from "@zendeskgarden/react-tooltips"
-import imageIcon from "/src/images/file_types/icons8-image-file-80.png"
 
 const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
     attachments,
@@ -82,6 +81,7 @@ const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
                         <SortableCell
                             width="40%"
                             onClick={() => toggleSortOrder("fileName")}
+                            sort={sortOrder === "asc" ? "asc" : "desc"}
                         >
                             Image name
                         </SortableCell>
@@ -90,6 +90,7 @@ const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
                                 width="30%"
                                 style={{ float: "right" }}
                                 onClick={() => toggleSortOrder("timestamp")}
+                                sort={sortOrder === "asc" ? "asc" : "desc"}
                             >
                                 Date
                             </SortableCell>
