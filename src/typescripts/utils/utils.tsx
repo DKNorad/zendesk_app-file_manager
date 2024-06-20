@@ -76,6 +76,24 @@ export async function getUniqueImageUrls(
     return uniqueUrls
 }
 
+export function getMimeType(contentType: string): string {
+    let mime = ""
+
+    if (contentType.startsWith("text/")) {
+        mime = textMimeTypes[contentType]
+    } else if (contentType.startsWith("application/")) {
+        mime = appMimeTypes[contentType]
+    } else {
+        mime = otherMimeTypes[contentType]
+    }
+
+    if (mime) {
+        return mime
+    } else {
+        return "File"
+    }
+}
+
 // MimeTypes
 export const appMimeTypes: { [key: string]: string } = {
     "application/andrew-inset": "Andrew Toolkit",
@@ -1033,6 +1051,7 @@ import cbrIcon from "/src/images/file_types/icons8-cbr-80.png"
 import audioBookIcon from "/src/images/file_types/icons8-audio-book-80.png"
 import apkIcon from "/src/images/file_types/icons8-apk-80.png"
 import sevenZipIcon from "/src/images/file_types/icons8-7zip-80.png"
+import spreadsheetIcon from "/src/images/file_types/icons8-spreadsheet-80.png"
 
 export const contentTypeImages: { [key: string]: string } = {
     "application/pdf": pdfIcon,
@@ -1043,11 +1062,11 @@ export const contentTypeImages: { [key: string]: string } = {
     "application/x-bzip": archiveIcon,
     "application/x-bzip2": archiveIcon,
     "application/x-gzip": archiveIcon,
-    "application/x-rar-compressed": archiveIcon,
     "application/x-tar": archiveIcon,
     "application/x-7z-compressed": sevenZipIcon,
     "application/x-zip-compressed": archiveIcon,
     "application/x-ace-compressed": archiveIcon,
+    "application/x-rar-compressed": rarIcon,
     "text/plain": textIcon,
     "text/html": htmlIcon,
     "text/css": cssIcon,
@@ -1072,6 +1091,43 @@ export const contentTypeImages: { [key: string]: string } = {
     "text/x-xml": xmlIcon,
     "text/x-yaml": textIcon,
     "text/x-zsh": codeIcon,
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        wordIcon,
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.template":
+        wordIcon,
+    "application/xaml+xml": xamlIcon,
+    "application/x-font-woff": woffIcon,
+    "application/x-font-ttf": ttfIcon,
+    "application/x-font-otf": otfIcon,
+    "application/x-gtar": tarIcon,
+    "application/x-mobipocket-ebook": mobiIcon,
+    "application/x-ms-application": exeIcon,
+    "application/x-ms-shortcut": exeIcon,
+    "application/x-msdownload": exeIcon,
+    "application/x-msbinder": exeIcon,
+    "application/x-mscardfile": exeIcon,
+    "application/x-msclip": exeIcon,
+    "application/x-msdos-program": exeIcon,
+    "application/x-msmediaview": exeIcon,
+    "application/x-mspublisher": exeIcon,
+    "application/x-msschedule": exeIcon,
+    "application/x-msterminal": exeIcon,
+    "application/x-mswrite": exeIcon,
+    "application/x-msaccess": exeIcon,
+    "application/epub+zip": epubIcon,
+    "application/fb2": fb2Icon,
+    "application/vnd.apple.installer+xml": apkIcon,
+    "application/vnd.dolby.mlp": audioBookIcon,
+    "application/vnd.ms-cab-compressed": archiveIcon,
+    "application/vnd.ms-excel": spreadsheetIcon,
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        spreadsheetIcon,
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.template":
+        spreadsheetIcon,
+    "application/x-cbr": cbrIcon,
+    "application/vnd.ms-works": wordIcon,
+    "application/vnd.oasis.opendocument.spreadsheet": spreadsheetIcon,
+    "application/vnd.oasis.opendocument.text": wordIcon,
 }
 
 // Images
