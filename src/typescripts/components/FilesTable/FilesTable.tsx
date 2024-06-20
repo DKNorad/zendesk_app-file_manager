@@ -35,6 +35,7 @@ function FilesTable({
     attachments,
 }: FilesTableattachmentsObj): React.ReactNode {
     const [loading, setLoading] = useState<boolean>(true)
+    const [widthStep, setWidthStep] = useState(0)
 
     const [sortColumn, setSortColumn] = useState<string>("fileName")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
@@ -61,6 +62,23 @@ function FilesTable({
 
         return () => clearTimeout(delaySearch)
     }, [searchInput])
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 760) {
+                setWidthStep(0)
+            } else if (window.innerWidth <= 390) {
+                setWidthStep(3)
+            } else if (window.innerWidth <= 560) {
+                setWidthStep(2)
+            } else if (window.innerWidth <= 760) {
+                setWidthStep(1)
+            }
+        }
+
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [window.innerWidth])
 
     const handleSearchInputChange = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -187,27 +205,39 @@ function FilesTable({
                         >
                             File name
                         </SortableCell>
-                        <SortableCell
-                            width={"22.5%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("type")}
-                        >
-                            Type
-                        </SortableCell>
-                        <SortableCell
-                            width={"22.5%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("size")}
-                        >
-                            Size
-                        </SortableCell>
-                        <SortableCell
-                            width={"22.5%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("timestamp")}
-                        >
-                            Date
-                        </SortableCell>
+                        {widthStep < 1 && (
+                            <SortableCell
+                                width={"22.5%"}
+                                style={{
+                                    float: "right",
+                                }}
+                                onClick={() => toggleSortOrder("type")}
+                            >
+                                Type
+                            </SortableCell>
+                        )}
+                        {widthStep < 3 && (
+                            <SortableCell
+                                width={"22.5%"}
+                                style={{
+                                    float: "right",
+                                }}
+                                onClick={() => toggleSortOrder("size")}
+                            >
+                                Size
+                            </SortableCell>
+                        )}
+                        {widthStep < 2 && (
+                            <SortableCell
+                                width={"22.5%"}
+                                style={{
+                                    float: "right",
+                                }}
+                                onClick={() => toggleSortOrder("timestamp")}
+                            >
+                                Date
+                            </SortableCell>
+                        )}
                         <HeaderCell style={{ width: "10%" }} />
                     </HeaderRow>
                 </Head>
@@ -234,30 +264,36 @@ function FilesTable({
                                         <span>{attachment.fileName}</span>
                                     </Tooltip>
                                 </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {getMimeType(attachment.contentType)}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {formatBytes(attachment.size)}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "22.5%",
-                                        textAlign: "right",
-                                    }}
-                                >
-                                    {formatDate(attachment.timestamp)}
-                                </Cell>
+                                {widthStep < 1 && (
+                                    <Cell
+                                        style={{
+                                            width: "22.5%",
+                                            textAlign: "right",
+                                        }}
+                                    >
+                                        {getMimeType(attachment.contentType)}
+                                    </Cell>
+                                )}
+                                {widthStep < 3 && (
+                                    <Cell
+                                        style={{
+                                            width: "22.5%",
+                                            textAlign: "right",
+                                        }}
+                                    >
+                                        {formatBytes(attachment.size)}
+                                    </Cell>
+                                )}
+                                {widthStep < 2 && (
+                                    <Cell
+                                        style={{
+                                            width: "22.5%",
+                                            textAlign: "right",
+                                        }}
+                                    >
+                                        {formatDate(attachment.timestamp)}
+                                    </Cell>
+                                )}
                                 <Cell
                                     hasOverflow
                                     style={{

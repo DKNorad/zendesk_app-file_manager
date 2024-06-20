@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     Body,
     Cell,
@@ -21,9 +21,23 @@ import { Tooltip } from "@zendeskgarden/react-tooltips"
 const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
     attachments,
 }) => {
+    const [widthStep, setWidthStep] = useState(0)
     const [sortColumn, setSortColumn] = useState<string>("imageName")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
     const [popupImage, setPopupImage] = useState<string | null>(null)
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 400) {
+                setWidthStep(0)
+            } else if (window.innerWidth <= 400) {
+                setWidthStep(1)
+            }
+        }
+
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [window.innerWidth])
 
     // Sort attachments based on the selected column and order
     const sortedAttachments = [...attachments].sort((a, b) => {
@@ -70,13 +84,15 @@ const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
                         >
                             Image name
                         </SortableCell>
-                        <SortableCell
-                            width="30%"
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("timestamp")}
-                        >
-                            Date
-                        </SortableCell>
+                        {widthStep < 1 && (
+                            <SortableCell
+                                width="30%"
+                                style={{ float: "right" }}
+                                onClick={() => toggleSortOrder("timestamp")}
+                            >
+                                Date
+                            </SortableCell>
+                        )}
                         <HeaderCell style={{ width: "10%" }} />
                     </HeaderRow>
                 </Head>
@@ -117,15 +133,17 @@ const EmbeddedImagesTable: React.FC<EmbeddedImagesattachmentsObj> = ({
                                             <span>{attachment.fileName}</span>
                                         </Tooltip>
                                     </Cell>
-                                    <Cell
-                                        style={{
-                                            width: "30%",
-                                            textAlign: "right",
-                                            verticalAlign: "middle",
-                                        }}
-                                    >
-                                        {formatDate(attachment.timestamp)}
-                                    </Cell>
+                                    {widthStep < 1 && (
+                                        <Cell
+                                            style={{
+                                                width: "30%",
+                                                textAlign: "right",
+                                                verticalAlign: "middle",
+                                            }}
+                                        >
+                                            {formatDate(attachment.timestamp)}
+                                        </Cell>
+                                    )}
                                     <Cell
                                         hasOverflow
                                         style={{

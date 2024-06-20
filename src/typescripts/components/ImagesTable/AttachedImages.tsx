@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     Body,
     Cell,
@@ -21,9 +21,25 @@ import { Tooltip } from "@zendeskgarden/react-tooltips"
 const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
     attachments,
 }) => {
+    const [widthStep, setWidthStep] = useState(0)
     const [sortColumn, setSortColumn] = useState<string>("imageName")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
     const [popupImage, setPopupImage] = useState<string | null>(null)
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 760) {
+                setWidthStep(0)
+            } else if (window.innerWidth <= 560) {
+                setWidthStep(2)
+            } else if (window.innerWidth <= 760) {
+                setWidthStep(1)
+            }
+        }
+
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [window.innerWidth])
 
     if (attachments.length === 0) {
         return null
@@ -74,20 +90,24 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                         >
                             Image name
                         </SortableCell>
-                        <SortableCell
-                            width={"20%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("size")}
-                        >
-                            Size
-                        </SortableCell>
-                        <SortableCell
-                            width={"20%"}
-                            style={{ float: "right" }}
-                            onClick={() => toggleSortOrder("timestamp")}
-                        >
-                            Date
-                        </SortableCell>
+                        {widthStep < 2 && (
+                            <SortableCell
+                                width={"20%"}
+                                style={{ float: "right" }}
+                                onClick={() => toggleSortOrder("size")}
+                            >
+                                Size
+                            </SortableCell>
+                        )}
+                        {widthStep < 1 && (
+                            <SortableCell
+                                width={"20%"}
+                                style={{ float: "right" }}
+                                onClick={() => toggleSortOrder("timestamp")}
+                            >
+                                Date
+                            </SortableCell>
+                        )}
                         <HeaderCell width={"10%"} />
                     </HeaderRow>
                 </Head>
@@ -141,24 +161,28 @@ const AttachedImagesTable: React.FC<AttachedImagesattachmentsObj> = ({
                                         <span>{attachment.fileName}</span>
                                     </Tooltip>
                                 </Cell>
-                                <Cell
-                                    style={{
-                                        width: "20%",
-                                        textAlign: "right",
-                                        verticalAlign: "middle",
-                                    }}
-                                >
-                                    {formatBytes(attachment.size)}
-                                </Cell>
-                                <Cell
-                                    style={{
-                                        width: "20%",
-                                        textAlign: "right",
-                                        verticalAlign: "middle",
-                                    }}
-                                >
-                                    {formatDate(attachment.timestamp)}
-                                </Cell>
+                                {widthStep < 2 && (
+                                    <Cell
+                                        style={{
+                                            width: "20%",
+                                            textAlign: "right",
+                                            verticalAlign: "middle",
+                                        }}
+                                    >
+                                        {formatBytes(attachment.size)}
+                                    </Cell>
+                                )}
+                                {widthStep < 1 && (
+                                    <Cell
+                                        style={{
+                                            width: "20%",
+                                            textAlign: "right",
+                                            verticalAlign: "middle",
+                                        }}
+                                    >
+                                        {formatDate(attachment.timestamp)}
+                                    </Cell>
+                                )}
                                 <Cell
                                     hasOverflow
                                     style={{
