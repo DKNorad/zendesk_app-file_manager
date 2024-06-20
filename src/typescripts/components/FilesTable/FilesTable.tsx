@@ -28,6 +28,8 @@ import {
     collectedAttachmens,
 } from "../../utils/interfaces"
 import { FaSearch } from "react-icons/fa"
+import { Col, Grid, Row as GridRow } from "@zendeskgarden/react-grid"
+import "./FilesTable.css"
 
 function FilesTable({
     attachments,
@@ -143,51 +145,39 @@ function FilesTable({
     }
 
     return (
-        <div className="files-table-container">
-            <div
-                className="search-container"
-                style={{ display: "flex", alignItems: "center" }}
-            >
-                <div
-                    className={`search-icon ${
-                        searchExpanded ? "expanded" : ""
-                    }`}
-                    onClick={toggleSearch}
-                    style={{
-                        padding: "8px",
-                        transition: "all 0.3s ease-in-out",
-                        cursor: "pointer",
-                    }}
-                >
-                    <FaSearch
-                        style={{
-                            fontSize: "18px",
-                            color: searchExpanded ? "#333" : "#888",
-                        }}
-                    />
-                </div>
-                {searchExpanded && (
-                    <input
-                        type="text"
-                        className="search-input"
-                        placeholder="Search..."
-                        value={searchInput}
-                        onChange={handleSearchInputChange}
-                        onBlur={handleSearchInputBlur}
-                        onKeyDown={handleSearchInputKeyDown}
-                        style={{
-                            borderRadius: "20px",
-                            padding: "8px 12px",
-                            width: "200px",
-                            overflow: "hidden",
-                            border: "1px solid #ccc",
-                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                            transition: "all 0.3s ease-in-out",
-                            marginLeft: "8px",
-                        }}
-                    />
-                )}
-            </div>
+        <>
+            <Grid>
+                <GridRow justifyContent="start" alignItems="center">
+                    <Col textAlign="end">
+                        <GridRow justifyContent="end" alignItems="center">
+                            {searchExpanded && (
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Search..."
+                                    value={searchInput}
+                                    onChange={handleSearchInputChange}
+                                    onBlur={handleSearchInputBlur}
+                                    onKeyDown={handleSearchInputKeyDown}
+                                />
+                            )}
+                            <div
+                                className={`search-icon ${
+                                    searchExpanded ? "expanded" : ""
+                                }`}
+                                onClick={toggleSearch}
+                            >
+                                <FaSearch
+                                    style={{
+                                        fontSize: "18px",
+                                        color: searchExpanded ? "#333" : "#888",
+                                    }}
+                                />
+                            </div>
+                        </GridRow>
+                    </Col>
+                </GridRow>
+            </Grid>
             <Table size="small">
                 <Head>
                     <HeaderRow>
@@ -286,7 +276,7 @@ function FilesTable({
                     )}
                 </Body>
             </Table>
-        </div>
+        </>
     )
 }
 
