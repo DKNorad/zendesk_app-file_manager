@@ -1,11 +1,17 @@
 # File Viewer
 
 The only attachment manager you'll need for your ZenDesk Support portal. All files in one place.
-![screenshot](https://i.imgur.com/ouTKGPo.png)
+![Files](https://i.imgur.com/BXTszhE.png)
 
-<p style="text-align: center;">///////////////////////////////////////////////////////////////////////////////////////</p>
+---
 
-![screenshot](https://i.imgur.com/MJreVAD.png)
+![Images](https://i.imgur.com/S9GO5gJ.png)
+
+---
+
+![Links](https://i.imgur.com/4b4MwAd.png)
+
+---
 
 ## Completed features
 
