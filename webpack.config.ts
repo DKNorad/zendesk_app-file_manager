@@ -4,8 +4,6 @@ import CopyWebpackPlugin from "copy-webpack-plugin"
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import HtmlWebpackPlugin from "html-webpack-plugin"
 import type webpack from "webpack"
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TranslationsPlugin = require("./webpack/translations-plugin")
 
 const externalAssets = {
     js: ["https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js"],
@@ -60,7 +58,7 @@ const config: webpack.Configuration = {
         ],
     },
     resolve: {
-        extensions: ["", ".ts", ".tsx", ".js", ".jsx"],
+        extensions: [".ts", ".tsx", ".js", ".jsx"],
     },
     plugins: [
         // Empties the dist folder
@@ -79,11 +77,6 @@ const config: webpack.Configuration = {
 
         new MiniCssExtractPlugin({
             filename: "[name].css",
-        }),
-
-        new TranslationsPlugin({
-            entryOnly: true,
-            path: path.resolve(__dirname, "./src/translations"),
         }),
 
         new HtmlWebpackPlugin({
