@@ -20,23 +20,30 @@ const Modal: React.FC<ModalContentProps> = ({ data, fileType }) => {
 
     return (
         <ThemeProvider>
-            {fileType === "text" && (
-                <>
-                    <h2>{data?.fileName}</h2>
-                    <pre>{data?.url}</pre>
-                </>
-            )}
-            {fileType === "image" && (
-                <div style={imgContainerStyles}>
-                    <a
-                        href={data?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img src={data?.url} style={imgStyles} alt="Image" />
-                    </a>
-                </div>
-            )}
+            <>
+                {fileType === "text" && (
+                    <>
+                        <h2>{data?.fileName}</h2>
+                        <hr />
+                        <pre>{data?.url}</pre>
+                    </>
+                )}
+                {fileType === "image" && (
+                    <div style={imgContainerStyles}>
+                        <a
+                            href={data?.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <img
+                                src={data?.url}
+                                style={imgStyles}
+                                alt="Image"
+                            />
+                        </a>
+                    </div>
+                )}
+            </>
         </ThemeProvider>
     )
 }

@@ -117,12 +117,7 @@ function LinksTable({ linksData }: LinksTableProps): React.ReactNode {
                 <Body>
                     {sortedLinks.map((link: string, index) => (
                         <Row key={index} isStriped={index % 2 === 0}>
-                            <Cell
-                                isTruncated
-                                style={{
-                                    width: "45%",
-                                }}
-                            >
+                            <Cell isTruncated>
                                 <Tooltip content={link}>
                                     <a
                                         href={link}

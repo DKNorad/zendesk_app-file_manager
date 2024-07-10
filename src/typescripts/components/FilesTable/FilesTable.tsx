@@ -38,10 +38,6 @@ function FilesTable({
     >([])
 
     useEffect(() => {
-        setLoading(false)
-    }, [])
-
-    useEffect(() => {
         const delaySearch = setTimeout(() => {
             const filtered = attachments.filter((attachment) =>
                 attachment.fileName
@@ -70,6 +66,10 @@ function FilesTable({
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)
     }, [window.innerWidth])
+
+    useEffect(() => {
+        setLoading(false)
+    }, [])
 
     const handleSearchInputChange = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -284,7 +284,7 @@ function FilesTable({
                                 >
                                     <OverflowMenu
                                         attachment={attachment}
-                                        fileType="text"
+                                        fileType={attachment.mimeType}
                                     />
                                 </Cell>
                             </Row>

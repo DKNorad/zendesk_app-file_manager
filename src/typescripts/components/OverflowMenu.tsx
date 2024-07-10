@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useMemo } from "react"
 import { Menu, Item } from "@zendeskgarden/react-dropdowns.next"
 import { IconButton } from "@zendeskgarden/react-buttons"
 import ConfirmDeleteModal from "./ConfirmDeleteModal"
@@ -57,24 +57,21 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
 
             const handleModalReady = async () => {
                 try {
+                    let fileTypeModal
+                    if (fileType === "image" || fileType === "embeddedImage") {
+                        fileTypeModal = "image"
+                    } else {
+                        fileTypeModal = "text"
+                    }
+
                     const modalContentString = renderToString(
-                        fileType === "image" || fileType === "embeddedImage" ? (
-                            <Modal
-                                data={{
-                                    url: url,
-                                    fileName: attachment.fileName ?? "Unknown",
-                                }}
-                                fileType="image"
-                            />
-                        ) : (
-                            <Modal
-                                data={{
-                                    url: url,
-                                    fileName: attachment.fileName ?? "Unknown",
-                                }}
-                                fileType="text"
-                            />
-                        ),
+                        <Modal
+                            data={{
+                                url: url,
+                                fileName: attachment.fileName ?? "Unknown",
+                            }}
+                            fileType={fileTypeModal}
+                        />,
                     )
 
                     await modalClient.trigger("drawData", modalContentString)
@@ -111,7 +108,9 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
     const openFile = async (openType: string) => {
         try {
             if (
-                (fileType === "image" || fileType === "embeddedImage") &&
+                (fileType === "image" ||
+                    fileType === "embeddedImage" ||
+                    fileType === "pdf") &&
                 openType === "Modal"
             ) {
                 openFileModal(attachment.contentUrl)
@@ -211,6 +210,25 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
         }
     }
 
+    const forModal =
+        fileType === "Text" ||
+        fileType === "image" ||
+        fileType === "embeddedImage" ||
+        fileType === "Log" ||
+        fileType === "XML" ||
+        fileType === "CSV" ||
+        fileType === "File"
+
+    const forNewTab =
+        fileType === "Text" ||
+        fileType === "image" ||
+        fileType === "embeddedImage" ||
+        fileType === "Log" ||
+        fileType === "XML" ||
+        fileType === "CSV" ||
+        fileType === "File" ||
+        fileType === "PDF"
+
     return (
         <>
             <Menu
@@ -226,10 +244,18 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
                     </IconButton>
                 )}
             >
-                <Item value="view" onClick={() => openFile("Modal")}>
+                <Item
+                    value="view"
+                    onClick={forModal ? () => openFile("Modal") : undefined}
+                    isDisabled={!forModal}
+                >
                     View
                 </Item>
-                <Item value="viewNewTab" onClick={handleViewNewTabClick}>
+                <Item
+                    value="viewNewTab"
+                    onClick={forNewTab ? handleViewNewTabClick : undefined}
+                    isDisabled={!forNewTab}
+                >
                     View (New Tab)
                 </Item>
                 {fileType !== "image" && fileType !== "embeddedImage" && (
