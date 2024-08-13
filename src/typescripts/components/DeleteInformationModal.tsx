@@ -8,7 +8,7 @@ import {
     FooterItem,
     Close,
 } from "@zendeskgarden/react-modals"
-import { DeletionError } from "./OverflowMenu"
+import { DeletionError } from "../utils/interfaces"
 
 interface DeleteInformationModalProps {
     visible: boolean
