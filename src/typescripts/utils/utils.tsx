@@ -766,7 +766,7 @@ export const appMimeTypes: { [key: string]: string } = {
     "application/xv+xml": "MXML",
     "application/yang": "YANG Data Modeling Language",
     "application/yin+xml": "YIN (YANG - XML)",
-    "application/zip": "ZIP Archive",
+    "application/zip": "ZIP",
     "application/ccmp+xml": "CCMP",
     "application/applefile": "Apple File",
     "application/auth-policy+xml": "Authorization Policy",

@@ -54,12 +54,13 @@ async function checkForEmbeddedImage(
     comment: commentObject,
 ): Promise<string[]> {
     const subdomain = await getSubDomain()
+    const customDomain = "zendesk"
     const embeddedImageRegex1 = new RegExp(
-        `!\\[\\]\\((https:\\/\\/${subdomain}\\.telco\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
+        `!\\[\\]\\((https:\\/\\/${subdomain}\\.${customDomain}\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
         "g",
     )
     const embeddedImageRegex2 = new RegExp(
-        `!\\[\\]\\((https:\\/\\/${subdomain}\\.telco\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
+        `!\\[\\]\\((https:\\/\\/${subdomain}\\.${customDomain}\\.com\\/attachments\\/token\\/[^\\s]+\\?name=[^\\)]+)\\)`,
         "g",
     )
     const embeddedImageRegex3 = new RegExp(
