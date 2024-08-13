@@ -1,6 +1,6 @@
-# Blue - File Viewer
+# Blue - File Manager
 
-The only attachment manager you'll need for your ZenDesk Support portal. All files in one place.
+The only ticket attachments manager you'll need for your ZenDesk Support portal. All files in one place.
 
 ## Completed features
 
