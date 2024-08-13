@@ -1,17 +1,6 @@
-# File Viewer
+# Blue - File Viewer
 
 The only attachment manager you'll need for your ZenDesk Support portal. All files in one place.
-![Files](https://i.imgur.com/BXTszhE.png)
-
----
-
-![Images](https://i.imgur.com/S9GO5gJ.png)
-
----
-
-![Links](https://i.imgur.com/4b4MwAd.png)
-
----
 
 ## Completed features
 
@@ -40,6 +29,32 @@ The only attachment manager you'll need for your ZenDesk Support portal. All fil
 -   [ ] Bulk download of files.
 -   [x] Better icon pack for the file types.
 -   [x] Improved design.
+
+## Screenshots
+
+![Files](https://i.imgur.com/wvDUVDL.png)
+
+---
+
+![Images](https://i.imgur.com/jbAiChK.png)
+
+---
+
+![Links](https://i.imgur.com/tWZAcLa.png)
+
+---
+
+![Links](https://i.imgur.com/OldTqu5.png)
+
+---
+
+![Links](https://i.imgur.com/aViLPKO.png)
+
+---
+
+![Links](https://i.imgur.com/eky3Msx.png)
+
+---
 
 ## Resources used:
 
